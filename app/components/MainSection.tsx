@@ -6,7 +6,7 @@ export default function MainSection() {
     <section className="flex justify-center gap-16 mt-14">
       <div className="flex flex-col  w-[40%]">
         <h1 className="text-6xl font-medium mb-9 ">
-          Достижение успеха в технологях продвижения
+          Достижение успеха в технологиях продвижения
         </h1>
         <p className=" text-xl font-normal mb-9">
           Наше digital-агентство помогает бизнесу расти и добиваться успеха в

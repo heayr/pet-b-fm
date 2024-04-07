@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <nav className="bg-slate-100 p-10 stick top-0">
+    <nav className="bg-white p-10 stick top-0">
       <div className=" mx-auto flex justify-between flex-col pt-10 sm:flex-row h-16 w-[64%]">
         <p className="text-2xl font-bold grid place-content-center">
           <Link

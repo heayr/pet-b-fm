@@ -5,8 +5,8 @@ export default function Services() {
   return (
     <section className=" mt-[105px]">
       <div className="flex items-center h-20 w-3/4  gap-10 mb-[60px]  ">
-        <Link id="services" href="#services">
-          <h2 className=" w-44 h-12 text-4xl text-[40px] pb-2 px-2 bg-default-lime rounded-md ">
+        <Link className="ml-[100px]" id="services" href="#">
+          <h2 className=" w-44 h-12  text-[40px] leading-9 pb-2 px-2 bg-default-lime rounded-md ">
             Сервисы
           </h2>
         </Link>
