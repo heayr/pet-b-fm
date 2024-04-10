@@ -19,7 +19,7 @@ export default function Services() {
       <div className="container-services flex flex-row flex-wrap justify-center gap-10">
         <div className="card-service  w-[600px] h-[310px] bg-default-grey roun flex rounded-[45px] justify-between">
           <div className="box flex flex-col justify-between">
-            <h3 className="text-2xl w-44 mt-[50px] ml-[50px] bg-default-lime rounded-2xl pl-3 pb-2">
+            <h3 className="text-2xl w-44 mt-[50px] ml-[50px] bg-default-lime rounded-2xl px-3 pb-2 text-center ">
               Полиграфия
             </h3>
             <button className="flex align-bottom ml-[51px] mb-[49px] items-center  ">
@@ -43,7 +43,7 @@ export default function Services() {
         </div>
         <div className="card-service  w-[600px] h-[310px]  bg-default-lime  flex rounded-[45px] justify-between">
           <div className="box flex flex-col justify-between">
-            <h3 className="text-2xl w-44 mt-[50px] ml-[50px] rounded-2xl pl-3 pb-2  bg-default-grey ">
+            <h3 className="text-2xl w-44 mt-[50px] ml-[50px] rounded-2xl px-3 pb-2  bg-default-grey text-center ">
               Создание Контента
             </h3>
             <button className="flex align-bottom ml-[51px] mb-[49px] items-center  ">
@@ -67,7 +67,7 @@ export default function Services() {
         </div>
         <div className="card-service  w-[600px] h-[310px] bg-black roun flex rounded-[45px] justify-between">
           <div className="box flex flex-col justify-between">
-            <h3 className="text-2xl w-44 mt-[50px] ml-[50px]  bg-default-grey rounded-2xl pl-3 pb-2">
+            <h3 className="text-2xl w-44 mt-[50px] ml-[50px]  bg-default-grey rounded-2xl px-3 pb-2 text-center">
               Наружная Реклама
             </h3>
             <button className="flex align-bottom ml-[51px] mb-[49px] text-default-grey items-center  ">
@@ -91,7 +91,7 @@ export default function Services() {
         </div>
         <div className="card-service  w-[600px] h-[310px] bg-default-grey roun flex rounded-[45px] justify-between">
           <div className="box flex flex-col justify-between">
-            <h3 className="text-2xl w-44 mt-[50px] ml-[50px] bg-default-lime rounded-2xl pl-3 pb-2">
+            <h3 className="text-2xl w-44 mt-[50px] ml-[50px] bg-default-lime rounded-2xl px-3 pb-2 text-center">
               Радио
             </h3>
             <button className="flex align-bottom ml-[51px] mb-[49px] items-center  ">
