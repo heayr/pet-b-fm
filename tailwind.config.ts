@@ -16,6 +16,7 @@ const config: Config = {
       colors: {
         "default-lime": "rgba(185, 255, 102, 1)",
         'default-grey': "rgba(243, 243, 243, 1)",
+        'dark': "rgba(25, 26, 35, 1)"
       },
     },
   },
