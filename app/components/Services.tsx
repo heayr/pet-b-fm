@@ -107,7 +107,7 @@ export default function Services() {
           </div>
           <Image
             className="mr-[50px]"
-            src="/images/web-search-with-elements 2.svg"
+            src="/images/illustration.svg"
             width={210}
             height={166}
             alt="Поиск"
