@@ -20,7 +20,7 @@ export default function Services() {
         <div className="card-service  w-[600px] h-[310px] bg-default-grey roun flex rounded-[45px] justify-between">
           <div className="box flex flex-col justify-between">
             <h3 className="text-2xl w-44 mt-[50px] ml-[50px] bg-default-lime rounded-2xl pl-3 pb-2">
-              Оптимизация поисковых запросов
+              Полиграфия
             </h3>
             <button className="flex align-bottom ml-[51px] mb-[49px] items-center  ">
               <Image
@@ -68,7 +68,7 @@ export default function Services() {
         <div className="card-service  w-[600px] h-[310px] bg-black roun flex rounded-[45px] justify-between">
           <div className="box flex flex-col justify-between">
             <h3 className="text-2xl w-44 mt-[50px] ml-[50px]  bg-default-grey rounded-2xl pl-3 pb-2">
-              Social Media Marketing
+              Наружная Реклама
             </h3>
             <button className="flex align-bottom ml-[51px] mb-[49px] text-default-grey items-center  ">
               <Image
@@ -92,7 +92,7 @@ export default function Services() {
         <div className="card-service  w-[600px] h-[310px] bg-default-grey roun flex rounded-[45px] justify-between">
           <div className="box flex flex-col justify-between">
             <h3 className="text-2xl w-44 mt-[50px] ml-[50px] bg-default-lime rounded-2xl pl-3 pb-2">
-              Оптимизация поисковых запросов
+              Радио
             </h3>
             <button className="flex align-bottom ml-[51px] mb-[49px] items-center  ">
               <Image

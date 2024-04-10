@@ -1,15 +1,22 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Navbar() {
   return (
     <nav className="bg-white p-10 stick top-0">
-      <div className=" mx-auto flex justify-between flex-col pt-10 sm:flex-row h-16 w-[64%]">
+      <div className=" mx-auto flex justify-between flex-col pt-10 sm:flex-row h-16 w-[65%]">
         <p className="text-2xl font-bold grid place-content-center">
           <Link
             href="/"
-            className="text-black text-4xl px-[20px] py-[10px] border-[2px] border-transparent hover:border-[2px] hover:border-default-lime border-solid rounded-full transition duration-700 ease-in-out hover:bg-default-lime "
+            className=" flex gap-3 text-black text-4xl px-[20px] py-[10px] border-[2px] border-transparent hover:border-[2px] hover:border-default-lime border-solid rounded-full transition duration-700 ease-in-out hover:bg-default-lime "
           >
-            Балаково ФМ
+            <Image
+              src="/images/main-logo.svg"
+              alt="Лого"
+              width={50}
+              height={50}
+            />
+            Радиоточка
           </Link>
         </p>
         <ul className="flex sm:flex-col lg:flex-row justify-center align-middle items-center gap-4 text-xl sm:justify-evenly  lg:text-sm list-none ">

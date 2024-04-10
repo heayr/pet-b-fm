@@ -12,7 +12,7 @@ export default function LogoSection() {
       />
       <Image
         alt="Лого Дорожное Радио"
-        src="/images/dorozhnoe.svg"
+        src="/images/nashe.svg"
         width={125}
         height={50}
         priority={true}
@@ -26,7 +26,7 @@ export default function LogoSection() {
       />
       <Image
         alt="Лого Дорожное Радио"
-        src="/images/dorozhnoe.svg"
+        src="/images/nashe.svg"
         width={125}
         height={50}
         priority={true}
@@ -40,7 +40,7 @@ export default function LogoSection() {
       />
       <Image
         alt="Лого Дорожное Радио"
-        src="/images/dorozhnoe.svg"
+        src="/images/nashe.svg"
         width={125}
         height={50}
         priority={true}
