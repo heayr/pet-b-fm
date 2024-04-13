@@ -4,6 +4,8 @@ import LogoSection from "./components/LogoSection";
 import Services from "./components/Services";
 import Proposal from "./components/Proposal";
 import Cases from "./components/Cases";
+import Form from "./components/Form";
+import Footer from "./components/Footer";
 
 export default function Home() {
   return (
@@ -13,6 +15,8 @@ export default function Home() {
       <Services />
       <Proposal />
       <Cases />
+      <Form />
+      <Footer />
     </div>
   );
 }
