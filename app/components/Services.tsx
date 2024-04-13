@@ -107,10 +107,10 @@ export default function Services() {
           </div>
           <Image
             className="mr-[50px]"
-            src="/images/illustration.svg"
+            src="/images/main-illustration.svg"
             width={210}
             height={166}
-            alt="Поиск"
+            alt="Радио"
           />
         </div>
       </div>
