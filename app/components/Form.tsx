@@ -1,8 +1,9 @@
 "use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import { useState, FormEvent } from "react";
+
+const key = process.env.NEXT_PUBLIC_ACCESS_KEY_WEB_FORM;
 
 export default function Form() {
   const [name, setName] = useState("");
@@ -17,7 +18,7 @@ export default function Form() {
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         body: JSON.stringify({
-          access_key: "b769d072-0f54-4802-b57f-b1e129ba8225",
+          access_key: key,
           name,
           email,
           message,
