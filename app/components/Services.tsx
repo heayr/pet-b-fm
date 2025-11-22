@@ -1,6 +1,57 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
+// Интерфейс для пропсов компонента ServiceCard
+interface ServiceCardProps {
+  title: string;
+  imageSrc: string;
+  iconSrc: string;
+  bgColor: string;
+  textColor: string;
+}
+
+// Компонент карточки услуги
+function ServiceCard({
+  title,
+  imageSrc,
+  iconSrc,
+  bgColor,
+  textColor
+}: ServiceCardProps) {
+  return (
+    <div
+      className={`${bgColor} rounded-3xl p-6 flex flex-col justify-between h-full`}
+    >
+      <h3 className={`text-xl font-semibold mb-6 ${textColor}`}>{title}</h3>
+      <div className="flex items-center justify-between">
+        <Link
+          href={`/services/${title.toLowerCase()}`}
+          className={`inline-flex items-center ${textColor} text-base font-medium transition duration-300 hover:opacity-80`}
+        >
+          <Image
+            src={iconSrc}
+            alt="Иконка услуги"
+            width={24}
+            height={24}
+            className="mr-3"
+          />
+          Узнать больше
+        </Link>
+        <Image
+          src={imageSrc}
+          alt={title}
+          width={120}
+          height={94}
+          className="rounded-xl"
+        />
+      </div>
+    </div>
+  );
+}
+
+// Основной компонент раздела "Сервисы"
 export default function Services() {
   return (
     <section className="px-4 sm:px-6 lg:px-8 mt-20">
@@ -59,40 +110,5 @@ export default function Services() {
         />
       </div>
     </section>
-  );
-}
-
-{
-  /* Компонент карточки услуги */
-}
-function ServiceCard({ title, imageSrc, iconSrc, bgColor, textColor }) {
-  return (
-    <div
-      className={`${bgColor} rounded-3xl p-6 flex flex-col justify-between h-full`}
-    >
-      <h3 className={`text-xl font-semibold mb-6 ${textColor}`}>{title}</h3>
-      <div className="flex items-center justify-between">
-        <Link
-          href={`/services/${title.toLowerCase()}`}
-          className={`inline-flex items-center ${textColor} text-base font-medium transition duration-300 hover:opacity-80`}
-        >
-          <Image
-            src={iconSrc}
-            alt="Стрелочка"
-            width={24}
-            height={24}
-            className="mr-3"
-          />
-          Узнать больше
-        </Link>
-        <Image
-          src={imageSrc}
-          alt={title}
-          width={120}
-          height={94}
-          className="rounded-xl"
-        />
-      </div>
-    </div>
   );
 }

@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    command: yarn start
+    container_name: radiotochka-web
+    restart: always
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.radiotochka.rule=Host(`radiotochka.nologs.site`)"
+      - "traefik.http.routers.radiotochka.entrypoints=websecure"
+      - "traefik.http.routers.radiotochka.tls=true"
+      - "traefik.http.services.radiotochka.loadbalancer.server.port=3000"
+
+networks:
+  proxy:
+    external: true

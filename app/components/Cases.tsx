@@ -1,5 +1,31 @@
+"use client";
+
 import Link from "next/link";
 
+// Интерфейс для пропсов компонента CaseCard
+interface CaseCardProps {
+  text: string;
+  link: string;
+}
+
+// Компонент карточки кейса
+function CaseCard({ text, link }: CaseCardProps) {
+  return (
+    <div className="flex flex-col p-6 bg-default-grey rounded-xl h-full">
+      <p className="text-default-grey text-base leading-relaxed mb-6 flex-1">
+        {text}
+      </p>
+      <Link
+        href={link}
+        className="text-default-lime font-medium hover:underline self-start"
+      >
+        Узнать больше
+      </Link>
+    </div>
+  );
+}
+
+// Основной компонент раздела "Наши проекты"
 export default function Cases() {
   return (
     <section className="px-4 sm:px-6 lg:px-8 mt-16">
@@ -28,6 +54,7 @@ export default function Cases() {
               text="Для интернет‑магазина мы разработали стратегию контент‑маркетинга, что позволило увеличить количество целевых лидов на 70 % за три месяца."
               link="/cases/ecommerce"
             />
+
             {/* Карточка 3 */}
             <CaseCard
               text="Для стартапа мы создали бренд‑идентичность и запустили SMM‑кампанию, что привело к росту узнаваемости бренда на 40 % за два месяца."
@@ -37,22 +64,5 @@ export default function Cases() {
         </div>
       </div>
     </section>
-  );
-}
-
-// Компонент карточки кейса
-function CaseCard({ text, link }) {
-  return (
-    <div className="flex flex-col p-6 bg-default-grey rounded-xl h-full">
-      <p className="text-default-grey text-base leading-relaxed mb-6 flex-1">
-        {text}
-      </p>
-      <Link
-        href={link}
-        className="text-default-lime font-medium hover:underline self-start"
-      >
-        Узнать больше
-      </Link>
-    </div>
   );
 }
