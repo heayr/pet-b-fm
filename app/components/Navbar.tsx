@@ -1,59 +1,117 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 
 export default function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
-    <nav className="bg-white p-10 stick top-0">
-      <div className=" mx-auto flex justify-between flex-col pt-10 sm:flex-row h-16 w-[65%]">
-        <p className="text-2xl font-bold grid place-content-center">
+    <nav className="bg-white sticky top-0 z-50 shadow-sm">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Верхняя строка: логотип + кнопка меню */}
+        <div className="flex items-center justify-between h-16">
           <Link
             href="/"
-            className=" flex gap-3 text-black text-4xl px-[20px] py-[10px] border-[2px] border-transparent hover:border-[2px] hover:border-default-lime border-solid rounded-full transition duration-700 ease-in-out hover:bg-default-lime "
+            className="flex items-center gap-3 text-2xl font-bold text-black"
           >
             <Image
               src="/images/main-logo.svg"
-              alt="Лого"
-              width={50}
-              height={50}
+              alt="Логотип Радиоточка"
+              width={40}
+              height={40}
             />
             Радиоточка
           </Link>
-        </p>
-        <ul className="flex sm:flex-col lg:flex-row justify-center align-middle items-center gap-4 text-xl sm:justify-evenly  lg:text-sm list-none ">
-          <Link
-            href={""}
-            className="text-black/70 px-[10px] py-[5px] text-xl rounded-full hover:bg-default-lime transition duration-300 ease-in-out"
+
+          {/* Кнопка гамбургера для мобильных */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="sm:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100"
+            aria-label="Открыть меню"
           >
-            О нас
-          </Link>
-          <Link
-            href="#services"
-            className="text-black/70 px-[10px] py-[5px] text-xl rounded-full hover:bg-default-lime transition duration-300 ease-in-out"
-          >
-            Услуги
-          </Link>
-          <Link
-            href=""
-            className="text-black/70 px-[10px] py-[5px] text-xl rounded-full hover:bg-default-lime transition duration-300 ease-in-out"
-          >
-            Портфолио
-          </Link>
-          <Link
-            href={""}
-            className="text-black/70 px-[10px] py-[5px] text-xl rounded-full hover:bg-default-lime transition duration-300 ease-in-out"
-          >
-            Стоимость
-          </Link>
-          <Link
-            href={""}
-            className="text-black/70 px-[10px] py-[5px] text-xl rounded-full hover:bg-default-lime transition duration-300 ease-in-out"
-          >
-            Блог
-          </Link>
-          <button className="text-black border-solid border-[1px] text-xl border-black rounded-xl px-[10px] py-[20px] transition duration-700 ease-in-out hover:bg-default-lime hover:border-default-lime">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              {isMenuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
+          </button>
+        </div>
+
+        {/* Основное меню (показывает при открытии или на десктопах) */}
+        <div
+          className={`
+            ${isMenuOpen ? "block" : "hidden"}
+            sm:flex sm:items-center sm:justify-between
+            mt-4 sm:mt-0
+          `}
+        >
+          <ul className="flex flex-col sm:flex-row gap-4 text-lg sm:text-base">
+            <li>
+              <Link
+                href="/"
+                className="block px-4 py-2 text-gray-700 hover:text-black hover:bg-default-lime rounded-full transition"
+              >
+                О нас
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="#services"
+                className="block px-4 py-2 text-gray-700 hover:text-black hover:bg-default-lime rounded-full transition"
+              >
+                Услуги
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/portfolio"
+                className="block px-4 py-2 text-gray-700 hover:text-black hover:bg-default-lime rounded-full transition"
+              >
+                Портфолио
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/pricing"
+                className="block px-4 py-2 text-gray-700 hover:text-black hover:bg-default-lime rounded-full transition"
+              >
+                Стоимость
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/blog"
+                className="block px-4 py-2 text-gray-700 hover:text-black hover:bg-default-lime rounded-full transition"
+              >
+                Блог
+              </Link>
+            </li>
+          </ul>
+
+          <button className="mt-4 sm:mt-0 px-6 py-3 text-base font-medium text-black border border-black rounded-xl hover:bg-default-lime hover:border-default-lime transition duration-300">
             Запросить консультацию
           </button>
-        </ul>
+        </div>
       </div>
     </nav>
   );

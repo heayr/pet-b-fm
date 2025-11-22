@@ -3,66 +3,92 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className=" w-[1240px] rounded-t-[45px] bg-dark mx-auto mt-32 pb-24">
-      <nav className="p-10 stick top-0">
-        <div className=" mx-auto flex justify-between flex-col pt-10 sm:flex-row h-16 w-[90%]">
-          <p className="text-2xl font-bold grid place-content-center">
+    <footer className="bg-dark pt-16 pb-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Верхняя часть: логотип и меню */}
+        <div className="flex flex-col sm:flex-row justify-between gap-8 sm:gap-12 mb-12">
+          {/* Логотип */}
+          <div className="flex justify-center sm:justify-start">
             <Link
               href="/"
-              className=" flex gap-3 text-default-grey  text-4xl px-[20px] py-[10px] border-[2px] border-transparent hover:border-[2px] hover:border-default-lime border-solid rounded-full transition duration-700 ease-in-out hover:bg-default-lime "
+              className="flex items-center gap-4 px-4 py-3 border-2 border-transparent rounded-full hover:border-default-lime hover:bg-default-lime transition duration-300"
             >
               <Image
                 src="/images/main-logo.svg"
-                alt="Лого"
-                width={50}
-                height={50}
+                alt="Логотип Радиоточка"
+                width={40}
+                height={40}
               />
-              Радиоточка
+              <span className="text-2xl font-bold text-default-grey">
+                Радиоточка
+              </span>
             </Link>
-          </p>
-          <ul className="flex sm:flex-col lg:flex-row justify-center align-middle items-center gap-4 text-xl sm:justify-evenly  lg:text-sm list-none ">
-            <Link
-              href={""}
-              className="text-default-grey /70 px-[10px] py-[5px] text-xl rounded-full hover:bg-default-lime transition duration-300 ease-in-out"
-            >
-              О нас
-            </Link>
-            <Link
-              href="#services"
-              className="text-default-grey /70 px-[10px] py-[5px] text-xl rounded-full hover:bg-default-lime transition duration-300 ease-in-out"
-            >
-              Услуги
-            </Link>
-            <Link
-              href=""
-              className="text-default-grey /70 px-[10px] py-[5px] text-xl rounded-full hover:bg-default-lime transition duration-300 ease-in-out"
-            >
-              Портфолио
-            </Link>
-            <Link
-              href={""}
-              className="text-default-grey /70 px-[10px] py-[5px] text-xl rounded-full hover:bg-default-lime transition duration-300 ease-in-out"
-            >
-              Стоимость
-            </Link>
-            <Link
-              href={""}
-              className="text-default-grey /70 px-[10px] py-[5px] text-xl rounded-full hover:bg-default-lime transition duration-300 ease-in-out"
-            >
-              Блог
-            </Link>
-          </ul>
+          </div>
+
+          {/* Меню */}
+          <nav aria-label="Основное меню">
+            <ul className="flex flex-wrap justify-center gap-x-6 gap-y-4">
+              {["О нас", "Услуги", "Портфолио", "Стоимость", "Блог"].map(
+                (item) => (
+                  <li key={item}>
+                    <Link
+                      href={item === "Услуги" ? "#services" : "/"}
+                      className="text-default-grey px-4 py-2 text-lg rounded-full hover:bg-default-lime hover:text-dark transition duration-300"
+                    >
+                      {item}
+                    </Link>
+                  </li>
+                )
+              )}
+            </ul>
+          </nav>
         </div>
-      </nav>
-      <div className="flex flex-col items-start gap-y-2 ml-32 mt-6 h-[150px]">
-        <h3 className=" text-default-dark bg-default-lime px-2 text-center pb-1 inline-block rounded-md text-xl ">
-          Контакты
-        </h3>
-        <p className=" text-default-grey  ">Email: Lorem ipsum </p>
-        <p className=" text-default-grey  ">Телефон: 8 927 137 07 50</p>
-        <p className=" text-default-grey w-[260px] ">
-          Адрес: 413857 г.Балаково ул.Факел социализма, 21 Офис 207
-        </p>
+
+        {/* Контакты */}
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
+          <div>
+            <h3 className="text-xl font-medium bg-default-lime px-3 py-1 rounded-md inline-block mb-6">
+              Контакты
+            </h3>
+            <div className="space-y-3">
+              <p className="text-default-grey text-base">
+                Email:{" "}
+                <a href="mailto:info@example.com" className="hover:underline">
+                  info@example.com
+                </a>
+              </p>
+              <p className="text-default-grey text-base">
+                Телефон:{" "}
+                <a href="tel:+79271370750" className="hover:underline">
+                  8 927 137-07-50
+                </a>
+              </p>
+              <p className="text-default-grey text-base max-w-xs">
+                Адрес: 413857, г. Балаково, ул. Факел социализма, 21, офис 207
+              </p>
+            </div>
+          </div>
+
+          {/* Соцсети (пример) */}
+          <div>
+            <h3 className="text-xl font-medium bg-default-lime px-3 py-1 rounded-md inline-block mb-6">
+              Мы в соцсетях
+            </h3>
+            <div className="flex gap-6">
+              <Link href="#" aria-label="Telegram">
+                <Image
+                  src="/images/telegram.svg"
+                  alt="Telegram"
+                  width={24}
+                  height={24}
+                />
+              </Link>
+              <Link href="#" aria-label="VK">
+                <Image src="/images/vk.svg" alt="VK" width={24} height={24} />
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
   );

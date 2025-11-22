@@ -3,117 +3,96 @@ import Link from "next/link";
 
 export default function Services() {
   return (
-    <section className=" mt-[105px]">
-      <div className="flex items-center h-20 w-3/4  gap-10 mb-[60px]  ">
-        <Link className="ml-[100px]" id="services" href="#">
-          <h2 className=" w-44 h-12  text-[40px] leading-9 pb-2 px-2 bg-default-lime rounded-md ">
-            Сервисы
-          </h2>
-        </Link>
-        <p className="">
-          В нашем маркетинговом агенстве, мы предлагаем несколько областей
-          услуг, чтобы помочь бизнесам расти и достигать успеха. Эти услуги
-          включают в себя:
-        </p>
+    <section className="px-4 sm:px-6 lg:px-8 mt-20">
+      {/* Заголовок и описание */}
+      <div className="max-w-6xl mx-auto mb-12">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+          <Link href="#services" className="flex-shrink-0">
+            <h2 className="text-3xl sm:text-4xl font-bold bg-default-lime px-4 py-2 rounded-md">
+              Сервисы
+            </h2>
+          </Link>
+          <p className="text-base sm:text-lg leading-relaxed flex-1">
+            В нашем маркетинговом агентстве мы предлагаем несколько областей
+            услуг, чтобы помочь бизнесам расти и достигать успеха. Эти услуги
+            включают в себя:
+          </p>
+        </div>
       </div>
-      <div className="container-services flex flex-row flex-wrap justify-center gap-10">
-        <div className="card-service  w-[600px] h-[310px] bg-default-grey roun flex rounded-[45px] justify-between">
-          <div className="box flex flex-col justify-between">
-            <h3 className="text-2xl w-44 mt-[50px] ml-[50px] bg-default-lime rounded-2xl px-3 pb-2 text-center ">
-              Полиграфия
-            </h3>
-            <button className="flex align-bottom ml-[51px] mb-[49px] items-center  ">
-              <Image
-                className="mr-[20px]"
-                src="/images/icon-black.svg"
-                alt="Стрелочка"
-                width={40}
-                height={40}
-              />
-              Узнать больше
-            </button>
-          </div>
-          <Image
-            className="mr-[50px]"
-            src="/images/web-search-with-elements 2.svg"
-            width={210}
-            height={166}
-            alt="Поиск"
-          />
-        </div>
-        <div className="card-service  w-[600px] h-[310px]  bg-default-lime  flex rounded-[45px] justify-between">
-          <div className="box flex flex-col justify-between">
-            <h3 className="text-2xl w-44 mt-[50px] ml-[50px] rounded-2xl px-3 pb-2  bg-default-grey text-center ">
-              Создание Контента
-            </h3>
-            <button className="flex align-bottom ml-[51px] mb-[49px] items-center  ">
-              <Image
-                className="mr-[20px]"
-                src="/images/icon-white.svg"
-                alt="Стрелочка"
-                width={40}
-                height={40}
-              />
-              Узнать больше
-            </button>
-          </div>
-          <Image
-            className="mr-[50px]"
-            src="/images/content.svg"
-            width={210}
-            height={166}
-            alt="Поиск"
-          />
-        </div>
-        <div className="card-service  w-[600px] h-[310px] bg-black roun flex rounded-[45px] justify-between">
-          <div className="box flex flex-col justify-between">
-            <h3 className="text-2xl w-44 mt-[50px] ml-[50px]  bg-default-grey rounded-2xl px-3 pb-2 text-center">
-              Наружная Реклама
-            </h3>
-            <button className="flex align-bottom ml-[51px] mb-[49px] text-default-grey items-center  ">
-              <Image
-                className="mr-[20px]"
-                src="/images/icon-white.svg"
-                alt="Стрелочка"
-                width={40}
-                height={40}
-              />
-              Узнать больше
-            </button>
-          </div>
-          <Image
-            className="mr-[50px]"
-            src="/images/smm.svg"
-            width={210}
-            height={166}
-            alt="Поиск"
-          />
-        </div>
-        <div className="card-service  w-[600px] h-[310px] bg-default-grey roun flex rounded-[45px] justify-between">
-          <div className="box flex flex-col justify-between">
-            <h3 className="text-2xl w-44 mt-[50px] ml-[50px] bg-default-lime rounded-2xl px-3 pb-2 text-center">
-              Радио
-            </h3>
-            <button className="flex align-bottom ml-[51px] mb-[49px] items-center  ">
-              <Image
-                className="mr-[20px]"
-                src="/images/icon-black.svg"
-                alt="Стрелочка"
-                width={40}
-                height={40}
-              />
-              Узнать больше
-            </button>
-          </div>
-          <Image
-            className="mr-[50px]"
-            src="/images/main-illustration.svg"
-            width={210}
-            height={166}
-            alt="Радио"
-          />
-        </div>
+
+      {/* Карточки услуг */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 px-4 sm:px-0">
+        {/* Карточка 1: Полиграфия */}
+        <ServiceCard
+          title="Полиграфия"
+          imageSrc="/images/web-search-with-elements 2.svg"
+          iconSrc="/images/icon-black.svg"
+          bgColor="bg-default-grey"
+          textColor="text-black"
+        />
+
+        {/* Карточка 2: Создание Контента */}
+        <ServiceCard
+          title="Создание Контента"
+          imageSrc="/images/content.svg"
+          iconSrc="/images/icon-white.svg"
+          bgColor="bg-default-lime"
+          textColor="text-white"
+        />
+
+        {/* Карточка 3: Наружная Реклама */}
+        <ServiceCard
+          title="Наружная Реклама"
+          imageSrc="/images/smm.svg"
+          iconSrc="/images/icon-white.svg"
+          bgColor="bg-black"
+          textColor="text-default-grey"
+        />
+
+        {/* Карточка 4: Радио */}
+        <ServiceCard
+          title="Радио"
+          imageSrc="/images/main-illustration.svg"
+          iconSrc="/images/icon-black.svg"
+          bgColor="bg-default-grey"
+          textColor="text-black"
+        />
       </div>
     </section>
+  );
+}
+
+{
+  /* Компонент карточки услуги */
+}
+function ServiceCard({ title, imageSrc, iconSrc, bgColor, textColor }) {
+  return (
+    <div
+      className={`${bgColor} rounded-3xl p-6 flex flex-col justify-between h-full`}
+    >
+      <h3 className={`text-xl font-semibold mb-6 ${textColor}`}>{title}</h3>
+      <div className="flex items-center justify-between">
+        <Link
+          href={`/services/${title.toLowerCase()}`}
+          className={`inline-flex items-center ${textColor} text-base font-medium transition duration-300 hover:opacity-80`}
+        >
+          <Image
+            src={iconSrc}
+            alt="Стрелочка"
+            width={24}
+            height={24}
+            className="mr-3"
+          />
+          Узнать больше
+        </Link>
+        <Image
+          src={imageSrc}
+          alt={title}
+          width={120}
+          height={94}
+          className="rounded-xl"
+        />
+      </div>
+    </div>
   );
 }
