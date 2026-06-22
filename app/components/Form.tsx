@@ -52,23 +52,23 @@ export default function Form() {
   };
 
   return (
-    <section className="px-4 sm:px-6 lg:px-8 mt-10" id="consultation">
-      <div className="max-w-6xl mx-auto mb-8">
+    <section className="mt-fluid-section" id="consultation">
+      <div className="max-w-container mx-auto mb-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
           <Link href="#services" className="flex-shrink-0">
-            <h2 className="text-3xl font-bold bg-default-lime px-4 py-2 rounded-md">
+            <h2 className="text-fluid-h2 font-bold bg-default-lime px-4 py-2 rounded-md">
               Свяжитесь с нами
             </h2>
           </Link>
-          <p className="text-base sm:text-lg leading-relaxed flex-1">
+          <p className="text-fluid-base flex-1">
             Оставьте нам сообщение: Давайте обсудим ваши потребности в
             маркетинге
           </p>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col lg:flex-row bg-default-grey rounded-3xl p-6 sm:p-8 lg:p-12 gap-8">
+      <div className="max-w-container mx-auto">
+        <div className="flex flex-col lg:flex-row bg-default-grey rounded-3xl p-fluid-container gap-fluid-form-gap">
           {/* Форма */}
           <form onSubmit={onSubmit} className="flex-1">
             {error && (
@@ -134,7 +134,7 @@ export default function Form() {
               <button
                 type="submit"
                 disabled={isSubmitted}
-                className="mt-6 w-full h-14 bg-dark text-default-grey text-xl font-medium rounded-2xl hover:bg-default-lime hover:text-dark transition duration-300 disabled:opacity-50"
+                className="mt-6 w-full h-14 bg-dark text-default-grey text-fluid-lg font-medium rounded-2xl hover:bg-default-lime hover:text-dark transition duration-300 disabled:opacity-50"
               >
                 {isSubmitted ? "Отправлено!" : "Отправить"}
               </button>

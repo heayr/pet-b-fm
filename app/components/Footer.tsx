@@ -3,8 +3,8 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-dark pt-16 pb-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
+    <footer className="bg-dark pt-fluid-section pb-8">
+      <div className="max-w-container mx-auto">
         {/* Верхняя часть: логотип и меню */}
         <div className="flex flex-col sm:flex-row justify-between gap-8 sm:gap-12 mb-12">
           {/* Логотип */}
@@ -38,7 +38,7 @@ export default function Footer() {
                       {item}
                     </Link>
                   </li>
-                )
+                ),
               )}
             </ul>
           </nav>

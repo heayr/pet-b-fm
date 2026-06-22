@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="ru">
       <body className="">
         <Navbar />
-        <main className="mx-auto w-full px-4 sm:px-6 lg:px-8">{children}</main>
+        <main className="mx-auto w-full px-fluid-container">{children}</main>
       </body>
     </html>
   );

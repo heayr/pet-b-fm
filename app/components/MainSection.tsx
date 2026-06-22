@@ -3,21 +3,21 @@ import Image from "next/image";
 
 export default function MainSection() {
   return (
-    <section className="px-4 sm:px-6 lg:px-8 py-8">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center lg:items-start gap-12">
+    <section className="py-fluid-section">
+      <div className="max-w-container mx-auto flex flex-col lg:flex-row items-center lg:items-start gap-fluid-section-gap">
         {/* Текстовый блок */}
         <div className="w-full lg:w-1/2">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-medium mb-6 leading-tight">
+          <h1 className="text-fluid-h1 font-medium mb-6">
             Наша аудитория приносит прибыль! Расскажите ей о своих товарах или
             услугах
           </h1>
-          <p className="text-lg sm:text-xl mb-8 leading-relaxed">
+          <p className="text-fluid-lg mb-8">
             Мы рекламное агентство полного цикла. Обратившись к нам, вы получите
             продвижение своего товара или услуги по всем направлениям.
           </p>
           <Link
-            href="/consultation"
-            className="inline-block text-white bg-black border-solid border-2 text-lg sm:text-xl px-6 py-4 rounded-xl transition duration-300 hover:bg-default-lime hover:text-black hover:border-default-lime"
+            href="#consultation"
+            className="inline-block text-white bg-black border-solid border-2 text-fluid-lg px-fluid-container py-4 rounded-xl transition duration-300 hover:bg-default-lime hover:text-black hover:border-default-lime"
           >
             Запросить консультацию
           </Link>
