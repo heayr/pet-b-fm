@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import Button from "./Button";
 
 const navLinks = [
   { label: "О нас", href: "/" },
@@ -84,12 +85,14 @@ export default function Navbar() {
             ))}
           </ul>
 
-          <Link
+          <Button
             href="#consultation"
-            className="mt-fluid-nav-mt-btn block rounded-xl border border-black px-fluid-nav-btn-x py-fluid-nav-btn-y text-center text-fluid-base font-medium text-black transition-colors hover:border-default-lime hover:bg-default-lime sm:mt-0 sm:ml-fluid-nav-gap-menu"
+            variant="outline"
+            size="fluid"
+            className="mt-fluid-nav-mt-btn block w-full text-center px-fluid-nav-btn-x py-fluid-nav-btn-y sm:w-auto sm:mt-0 sm:ml-fluid-nav-gap-menu"
           >
             Запросить консультацию
-          </Link>
+          </Button>
         </div>
       </div>
     </nav>

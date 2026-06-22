@@ -41,6 +41,11 @@ const config: Config = {
         "fluid-section-gap": "clamp(1.5rem, 4vw, 3rem)",
         "fluid-cards-gap": "clamp(1rem, 2vw, 2.5rem)",
         "fluid-form-gap": "clamp(1.5rem, 3vw, 3rem)",
+        // Button-specific (универсальные, не только для nav)
+        "fluid-btn-x": "clamp(1rem, 2.5vw, 1.5rem)",
+        "fluid-btn-y": "clamp(0.5rem, 1.5vw, 0.75rem)",
+        "fluid-btn-lg-x": "clamp(1.25rem, 3vw, 2rem)",
+        "fluid-btn-lg-y": "clamp(0.75rem, 2vw, 1rem)",
       },
       maxWidth: {
         container: "clamp(320px, 88%, 1200px)",

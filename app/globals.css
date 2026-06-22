@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Глобально отключаем перетаскивание изображений */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+/* Отключаем выделение текста на интерактивных элементах,
+   чтобы предотвратить случайное перетаскивание при клике */
+button,
+[role="button"],
+input[type="submit"],
+input[type="reset"] {
+  user-select: none;
+  -webkit-user-select: none;
+}

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import Image from "next/image";
+import Button from "./Button";
 
 export default function MainSection() {
   return (
@@ -15,12 +15,9 @@ export default function MainSection() {
             Мы рекламное агентство полного цикла. Обратившись к нам, вы получите
             продвижение своего товара или услуги по всем направлениям.
           </p>
-          <Link
-            href="#consultation"
-            className="inline-block text-white bg-black border-solid border-2 text-fluid-lg px-fluid-container py-4 rounded-xl transition duration-300 hover:bg-default-lime hover:text-black hover:border-default-lime"
-          >
+          <Button href="#consultation" variant="primary" size="lg">
             Запросить консультацию
-          </Link>
+          </Button>
         </div>
 
         {/* Иллюстрация */}
