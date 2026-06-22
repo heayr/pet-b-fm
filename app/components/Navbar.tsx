@@ -11,6 +11,7 @@ const navLinks = [
   { label: "Портфолио", href: "/portfolio" },
   { label: "Стоимость", href: "/pricing" },
   { label: "Блог", href: "/blog" },
+  { label: "Модерация", href: "/admin/content" },
 ] as const;
 
 export default function Navbar() {

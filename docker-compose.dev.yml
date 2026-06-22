@@ -1,29 +1,55 @@
 services:
+  db:
+    image: postgres:16-alpine
+    container_name: pet-b-fm-db-dev
+    environment:
+      POSTGRES_USER: petbuser
+      POSTGRES_PASSWORD: petbpassword
+      POSTGRES_DB: petbfmdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U petbuser -d petbfmdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   web-dev:
     build:
       context: .
       dockerfile: Dockerfile.dev
     container_name: pet-b-fm-dev
-    command: yarn dev
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && npx prisma db seed || true && npm run dev"
     ports:
       - "3000:3000"
     volumes:
-      # Монтируем исходный код для hot-reload
       - ./app:/app/app
       - ./pages:/app/pages
       - ./public:/app/public
       - ./components:/app/components
-      - ./.env:/app/.env
-      # Пробрасываем конфиги для TypeScript, Tailwind, PostCSS, ESLint
+      - ./lib:/app/lib
+      - ./auth.ts:/app/auth.ts
+      - ./middleware.ts:/app/middleware.ts
+      - ./prisma:/app/prisma
+      - ./types:/app/types
+      - ./.env.local:/app/.env.local
       - ./tsconfig.json:/app/tsconfig.json
       - ./tailwind.config.ts:/app/tailwind.config.ts
       - ./postcss.config.js:/app/postcss.config.js
       - ./next.config.mjs:/app/next.config.mjs
-      # Изолируем node_modules и .next от хоста
-      - /app/node_modules
+      # Изолируем только .next от хоста
       - /app/.next
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
+      - DATABASE_URL=postgresql://petbuser:petbpassword@db:5432/petbfmdb?schema=public
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
+
+volumes:
+  pgdata_dev:

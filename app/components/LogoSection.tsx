@@ -1,11 +1,18 @@
 import Image from "next/image";
+import { db } from "@/lib/db";
 
-const logos = [
+const defaultLogos = [
   { src: "/images/dorozhnoe.svg", alt: "Логотип Дорожное Радио" },
   { src: "/images/nashe.svg", alt: "Логотип Наше Радио" },
 ] as const;
 
-export default function LogoSection() {
+export default async function LogoSection() {
+  const block = await db.contentBlock.findUnique({
+    where: { slug: "logo-section" },
+  });
+
+  const logos = (block?.content?.logos as typeof defaultLogos) || defaultLogos;
+
   return (
     <div className="mt-fluid-section">
       <div className="max-w-container mx-auto flex flex-wrap justify-center gap-fluid-section-gap">

@@ -1,7 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
+import { auth } from "@/auth";
 
-export default function Footer() {
+export default async function Footer() {
+  const session = await auth();
+  const isAdmin = session?.user?.role
+    ? ["super_admin", "admin", "moderator"].includes(session.user.role)
+    : false;
+
   return (
     <footer className="bg-dark pt-fluid-section pb-8">
       <div className="max-w-container mx-auto">
@@ -39,6 +45,16 @@ export default function Footer() {
                     </Link>
                   </li>
                 ),
+              )}
+              {isAdmin && (
+                <li>
+                  <Link
+                    href="/admin/content"
+                    className="text-default-grey px-4 py-2 text-lg rounded-full bg-default-lime text-dark font-medium transition duration-300"
+                  >
+                    Модерация
+                  </Link>
+                </li>
               )}
             </ul>
           </nav>
