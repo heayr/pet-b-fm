@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "./components/Navbar";
+import SessionProvider from "./components/SessionProvider";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -18,8 +19,10 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className="">
-        <Navbar />
-        <main className="mx-auto w-full px-fluid-container">{children}</main>
+        <SessionProvider>
+          <Navbar />
+          <main className="mx-auto w-full px-fluid-container">{children}</main>
+        </SessionProvider>
       </body>
     </html>
   );

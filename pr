@@ -1,0 +1,115 @@
+{
+  "version": "5.22.0",
+  "steps": [
+    {
+      "tag": "CreateEnum",
+      "enum": "UserRole",
+      "values": ["super_admin", "admin", "moderator", "user"]
+    },
+    {
+      "tag": "CreateEnum",
+      "enum": "ContentStatus",
+      "values": ["draft", "published", "archived"]
+    },
+    {
+      "tag": "CreateTable",
+      "table": "User"
+    },
+    {
+      "tag": "CreateTable",
+      "table": "Account"
+    },
+    {
+      "tag": "CreateTable",
+      "table": "Session"
+    },
+    {
+      "tag": "CreateTable",
+      "table": "VerificationToken"
+    },
+    {
+      "tag": "CreateTable",
+      "table": "TwoFactorToken"
+    },
+    {
+      "tag": "CreateTable",
+      "table": "AuditLog"
+    },
+    {
+      "tag": "CreateTable",
+      "table": "ContentBlock"
+    },
+    {
+      "tag": "CreateTable",
+      "table": "ContentHistory"
+    },
+    {
+      "tag": "CreateIndex",
+      "index": "User_email_key"
+    },
+    {
+      "tag": "CreateIndex",
+      "index": "Account_provider_providerAccountId_key"
+    },
+    {
+      "tag": "CreateIndex",
+      "index": "Session_sessionToken_key"
+    },
+    {
+      "tag": "CreateIndex",
+      "index": "VerificationToken_token_key"
+    },
+    {
+      "tag": "CreateIndex",
+      "index": "VerificationToken_identifier_token_key"
+    },
+    {
+      "tag": "CreateIndex",
+      "index": "TwoFactorToken_token_key"
+    },
+    {
+      "tag": "CreateIndex",
+      "index": "TwoFactorToken_email_token_key"
+    },
+    {
+      "tag": "CreateIndex",
+      "index": "AuditLog_userId_idx"
+    },
+    {
+      "tag": "CreateIndex",
+      "index": "AuditLog_action_idx"
+    },
+    {
+      "tag": "CreateIndex",
+      "index": "AuditLog_createdAt_idx"
+    },
+    {
+      "tag": "CreateIndex",
+      "index": "ContentBlock_slug_key"
+    },
+    {
+      "tag": "CreateIndex",
+      "index": "ContentHistory_contentBlockId_idx"
+    },
+    {
+      "tag": "CreateForeignKey",
+      "constraint": "Account_userId_fkey"
+    },
+    {
+      "tag": "CreateForeignKey",
+      "constraint": "Session_userId_fkey"
+    },
+    {
+      "tag": "CreateForeignKey",
+      "constraint": "AuditLog_userId_fkey"
+    },
+    {
+      "tag": "CreateForeignKey",
+      "constraint": "ContentHistory_contentBlockId_fkey"
+    },
+    {
+      "tag": "CreateForeignKey",
+      "constraint": "ContentHistory_changedById_fkey"
+    }
+  ]
+}

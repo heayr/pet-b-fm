@@ -1,5 +1,5 @@
 # Этап сборки
-FROM node:24-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -9,6 +9,10 @@ COPY package.json yarn.lock ./
 # Устанавливаем зависимости
 RUN yarn install --frozen-lockfile
 
+# Копируем Prisma schema и генерируем клиент
+COPY prisma/schema.prisma ./prisma/
+RUN npx prisma generate
+
 # Копируем код проекта
 COPY . .
 
@@ -16,7 +20,7 @@ COPY . .
 RUN yarn build
 
 # Финальный этап
-FROM node:24-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
@@ -27,6 +31,7 @@ COPY --from=builder /app/package.json ./
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/prisma ./prisma
 
 EXPOSE 3000
 

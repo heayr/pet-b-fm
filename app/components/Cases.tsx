@@ -1,16 +1,27 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import Link from "next/link";
+import SafeImage from "./SafeImage";
+import { db } from "@/lib/db";
 
 interface CaseCardProps {
   text: string;
   link: string;
+  imageSrc?: string;
 }
 
-function CaseCard({ text, link }: CaseCardProps) {
+function CaseCard({ text, link, imageSrc }: CaseCardProps) {
   return (
     <div className="flex flex-col p-6 bg-default-grey rounded-xl h-full">
+      {imageSrc && (
+        <div className="mb-4">
+          <SafeImage
+            src={imageSrc}
+            alt=""
+            width={400}
+            height={200}
+            className="w-full h-48 object-cover rounded-xl"
+          />
+        </div>
+      )}
       <p className="text-black text-base leading-relaxed mb-6 flex-1">{text}</p>
       <Link
         href={link}
@@ -22,50 +33,35 @@ function CaseCard({ text, link }: CaseCardProps) {
   );
 }
 
-const defaultCases: CaseCardProps[] = [
-  {
-    text: "Для местного ресторана мы запустили таргетированную PPC‑кампанию, которая привела к росту трафика на сайт на 50 % и увеличению продаж на 25 %.",
-    link: "/cases/restaurant",
-  },
-  {
-    text: "Для интернет‑магазина мы разработали стратегию контент‑маркетинга, что позволило увеличить количество целевых лидов на 70 % за три месяца.",
-    link: "/cases/ecommerce",
-  },
-  {
-    text: "Для стартапа мы создали бренд‑идентичность и запустили SMM‑кампанию, что привело к росту узнаваемости бренда на 40 % за два месяца.",
-    link: "/cases/startup",
-  },
-];
+export default async function Cases() {
+  let block;
+  try {
+    block = await db.contentBlock.findUnique({
+      where: { slug: "cases" },
+    });
+  } catch (e) {
+    console.error("[Cases] DB error:", e);
+  }
 
-export default function Cases() {
-  const [cases, setCases] = useState<CaseCardProps[]>(defaultCases);
-  const [title, setTitle] = useState("Наши проекты");
-  const [subtitle, setSubtitle] = useState(
-    "Изучите реальные кейсы успеха, сделанные нашим рекламным агентством.",
-  );
-
-  useEffect(() => {
-    async function loadContent() {
-      try {
-        const res = await fetch("/api/content/cases", { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          if (data?.content?.items) {
-            setCases(data.content.items);
-          }
-          if (data?.content?.title) {
-            setTitle(data.content.title);
-          }
-          if (data?.content?.subtitle) {
-            setSubtitle(data.content.subtitle);
-          }
-        }
-      } catch {
-        // ignore
-      }
-    }
-    loadContent();
-  }, []);
+  const content = block?.content as any;
+  const cases: CaseCardProps[] = content?.items || [
+    {
+      text: "Для местного ресторана мы запустили таргетированную PPC‑кампанию, которая привела к росту трафика на сайт на 50 % и увеличению продаж на 25 %.",
+      link: "/cases/restaurant",
+    },
+    {
+      text: "Для интернет‑магазина мы разработали стратегию контент‑маркетинга, что позволило увеличить количество целевых лидов на 70 % за три месяца.",
+      link: "/cases/ecommerce",
+    },
+    {
+      text: "Для стартапа мы создали бренд‑идентичность и запустили SMM‑кампанию, что привело к росту узнаваемости бренда на 40 % за два месяца.",
+      link: "/cases/startup",
+    },
+  ];
+  const title = content?.title || "Наши проекты";
+  const subtitle =
+    content?.subtitle ||
+    "Изучите реальные кейсы успеха, сделанные нашим рекламным агентством.";
 
   return (
     <section className="mt-fluid-section">
@@ -84,6 +80,16 @@ export default function Cases() {
             {cases.map((caseItem, idx) => (
               <CaseCard key={idx} {...caseItem} />
             ))}
+          </div>
+          {/* DEBUG */}
+          <div className="text-white text-xs mt-4 p-2 bg-gray-800 rounded space-y-1">
+            <div>DEBUG block: {block ? "найден" : "НЕ НАЙДЕН"}</div>
+            <div>
+              DEBUG content keys:{" "}
+              {content ? Object.keys(content).join(", ") : "пусто"}
+            </div>
+            <div>DEBUG items count: {content?.items?.length ?? 0}</div>
+            <div>DEBUG item[0]: {JSON.stringify(cases[0])}</div>
           </div>
         </div>
       </div>

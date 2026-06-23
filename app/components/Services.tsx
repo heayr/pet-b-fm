@@ -1,8 +1,6 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import Image from "next/image";
+import SafeImage from "./SafeImage";
 import Link from "next/link";
+import { db } from "@/lib/db";
 
 interface ServiceCardProps {
   title: string;
@@ -31,7 +29,7 @@ function ServiceCard({
     >
       <h3 className={`${textColor} text-xl font-semibold mb-6`}>{title}</h3>
       <div className="flex items-center justify-between">
-        <Image
+        <SafeImage
           src={imageSrc}
           alt={title}
           width={120}
@@ -43,64 +41,47 @@ function ServiceCard({
   );
 }
 
-const defaultServices: ServiceCardProps[] = [
-  {
-    title: "Полиграфия",
-    imageSrc: "/images/web-search-with-elements 2.svg",
-    iconSrc: "/images/icon-black.svg",
-    bgColor: "bg-default-grey",
-    textColor: "text-black",
-    borderColor: "border-default-lime",
-    borderWidth: "border-2",
-  },
-  {
-    title: "Создание Контента",
-    imageSrc: "/images/content.svg",
-    iconSrc: "/images/icon-white.svg",
-    bgColor: "bg-default-lime",
-    textColor: "text-white",
-  },
-  {
-    title: "Наружная Реклама",
-    imageSrc: "/images/smm.svg",
-    iconSrc: "/images/icon-white.svg",
-    bgColor: "bg-black",
-    textColor: "text-default-grey",
-  },
-  {
-    title: "Радио",
-    imageSrc: "/images/main-illustration.svg",
-    iconSrc: "/images/icon-black.svg",
-    bgColor: "bg-default-grey",
-    textColor: "text-black",
-    borderColor: "border-default-lime",
-    borderWidth: "border-2",
-  },
-];
+export default async function Services() {
+  const block = await db.contentBlock.findUnique({
+    where: { slug: "services" },
+  });
 
-export default function Services() {
-  const [services, setServices] = useState<ServiceCardProps[]>(defaultServices);
-  const [title, setTitle] = useState("Сервисы");
-
-  useEffect(() => {
-    async function loadContent() {
-      try {
-        const res = await fetch("/api/content/services", { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          if (data?.content?.items) {
-            setServices(data.content.items);
-          }
-          if (data?.content?.title) {
-            setTitle(data.content.title);
-          }
-        }
-      } catch {
-        // ignore
-      }
-    }
-    loadContent();
-  }, []);
+  const content = block?.content as any;
+  const services: ServiceCardProps[] = content?.items || [
+    {
+      title: "Полиграфия",
+      imageSrc: "/images/web-search-with-elements 2.svg",
+      iconSrc: "/images/icon-black.svg",
+      bgColor: "bg-default-grey",
+      textColor: "text-black",
+      borderColor: "border-default-lime",
+      borderWidth: "border-2",
+    },
+    {
+      title: "Создание Контента",
+      imageSrc: "/images/content.svg",
+      iconSrc: "/images/icon-white.svg",
+      bgColor: "bg-default-lime",
+      textColor: "text-white",
+    },
+    {
+      title: "Наружная Реклама",
+      imageSrc: "/images/smm.svg",
+      iconSrc: "/images/icon-white.svg",
+      bgColor: "bg-black",
+      textColor: "text-default-grey",
+    },
+    {
+      title: "Радио",
+      imageSrc: "/images/main-illustration.svg",
+      iconSrc: "/images/icon-black.svg",
+      bgColor: "bg-default-grey",
+      textColor: "text-black",
+      borderColor: "border-default-lime",
+      borderWidth: "border-2",
+    },
+  ];
+  const title = content?.title || "Наши услуги";
 
   return (
     <section className="mt-fluid-section" id="services">

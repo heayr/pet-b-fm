@@ -1,4 +1,4 @@
-import Image from "next/image";
+import SafeImage from "./SafeImage";
 import Link from "next/link";
 import { db } from "@/lib/db";
 
@@ -37,7 +37,7 @@ export default async function Proposal() {
 
           {/* Иллюстрация */}
           <div className="w-full lg:w-1/2 flex justify-center">
-            <Image
+            <SafeImage
               src="/images/happen.svg"
               alt="Иллюстрация к предложению"
               width={359}

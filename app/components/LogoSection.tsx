@@ -1,4 +1,4 @@
-import Image from "next/image";
+import SafeImage from "./SafeImage";
 import { db } from "@/lib/db";
 
 const defaultLogos = [
@@ -18,13 +18,12 @@ export default async function LogoSection() {
       <div className="max-w-container mx-auto flex flex-wrap justify-center gap-fluid-section-gap">
         {[0, 1, 2].map((row) =>
           logos.map((logo, i) => (
-            <Image
+            <SafeImage
               key={`${row}-${i}`}
               src={logo.src}
               alt={logo.alt}
               width={125}
               height={50}
-              priority
               className="flex-shrink-0"
             />
           )),
@@ -33,3 +32,5 @@ export default async function LogoSection() {
     </div>
   );
 }
+
+export { defaultLogos };

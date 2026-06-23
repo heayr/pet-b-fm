@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import SafeImage from "@/app/components/SafeImage";
 import {
   updateContentBlock,
   createContentBlock,
 } from "@/lib/actions/admin-actions";
 import { useRouter } from "next/navigation";
 import Button from "@/app/components/Button";
+import { defaultLogos } from "@/app/components/LogoSection";
 
 interface ContentBlock {
   id: string;
@@ -113,7 +115,9 @@ export default function ContentList({
 
   const handleSave = async (updated: any) => {
     if (!editingBlock) return;
-    const result = await updateContentBlock(editingBlock.slug, updated);
+    const result = await updateContentBlock(editingBlock.slug, {
+      content: updated,
+    });
     if (result.error) {
       alert(result.error);
       return;
@@ -232,6 +236,25 @@ function LogoSectionEditor({
   const removeLogo = (idx: number) =>
     setLogos((prev) => prev.filter((_, i) => i !== idx));
 
+  const resetToDefault = () => {
+    setLogos(
+      defaultLogos.map((l) => ({
+        src: l.src,
+        alt: l.alt,
+      })),
+    );
+  };
+
+  const resetLogo = (idx: number) => {
+    setLogos((prev) =>
+      prev.map((logo, i) =>
+        i === idx
+          ? { src: defaultLogos[i]?.src || "", alt: defaultLogos[i]?.alt || "" }
+          : logo,
+      ),
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -251,33 +274,71 @@ function LogoSectionEditor({
           className="w-full px-4 py-2 border rounded-xl"
         />
       </div>
+      <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-xl text-sm">
+        <p className="font-medium mb-1">Рекомендации по изображениям:</p>
+        <p>
+          Размер: 125×50 px. Формат: WebP (приоритет), SVG, PNG. Оптимизируйте
+          вес до ~10 КБ.
+        </p>
+      </div>
       {logos.map((logo, idx) => (
         <div key={idx} className="border p-4 rounded-xl space-y-2">
-          <input
-            value={logo.src}
-            onChange={(e) => updateLogo(idx, "src", e.target.value)}
-            placeholder="Путь к картинке (/images/...)"
-            className="w-full px-4 py-2 border rounded-xl"
-          />
-          <input
-            value={logo.alt}
-            onChange={(e) => updateLogo(idx, "alt", e.target.value)}
-            placeholder="Alt текст"
-            className="w-full px-4 py-2 border rounded-xl"
-          />
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => removeLogo(idx)}
-          >
-            Удалить
-          </Button>
+          <div className="flex items-center gap-4">
+            <SafeImage
+              src={logo.src}
+              alt={logo.alt}
+              width={125}
+              height={50}
+              className="flex-shrink-0 rounded border bg-gray-50"
+            />
+            <div className="flex-1 space-y-2">
+              <input
+                value={logo.src}
+                onChange={(e) => updateLogo(idx, "src", e.target.value)}
+                placeholder="Путь к картинке (/images/...) или https://..."
+                className="w-full px-4 py-2 border rounded-xl"
+              />
+              <input
+                value={logo.alt}
+                onChange={(e) => updateLogo(idx, "alt", e.target.value)}
+                placeholder="Alt текст"
+                className="w-full px-4 py-2 border rounded-xl"
+              />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => resetLogo(idx)}
+            >
+              Сбросить к дефолту
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => removeLogo(idx)}
+            >
+              Удалить
+            </Button>
+          </div>
         </div>
       ))}
-      <Button type="button" variant="outline" size="sm" onClick={addLogo}>
-        + Добавить логотип
-      </Button>
+      <div className="flex gap-2">
+        <Button type="button" variant="outline" size="sm" onClick={addLogo}>
+          + Добавить логотип
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={resetToDefault}
+        >
+          Сбросить все к дефолту
+        </Button>
+      </div>
       <div className="flex gap-3">
         <Button type="submit" variant="primary" size="md" loading={isLoading}>
           Сохранить
@@ -290,6 +351,14 @@ function LogoSectionEditor({
   );
 }
 
+interface ServiceItem {
+  title: string;
+  description?: string;
+  imageSrc: string;
+  bgColor: string;
+  textColor: string;
+}
+
 function ServicesEditor({
   block,
   onSave,
@@ -300,22 +369,82 @@ function ServicesEditor({
   onCancel: () => void;
 }) {
   const [title, setTitle] = useState(block.content?.title || "Наши услуги");
-  const [items, setItems] = useState(block.content?.items || []);
+  const [items, setItems] = useState<ServiceItem[]>(block.content?.items || []);
   const [isLoading, setIsLoading] = useState(false);
 
-  const updateItem = (idx: number, field: string, value: string) => {
-    setItems((prev: any[]) =>
+  const defaultItems: ServiceItem[] = block.content?.items || [
+    {
+      title: "Полиграфия",
+      imageSrc: "/images/web-search-with-elements 2.svg",
+      bgColor: "bg-default-grey",
+      textColor: "text-black",
+      description: "",
+    },
+    {
+      title: "Создание Контента",
+      imageSrc: "/images/content.svg",
+      bgColor: "bg-default-lime",
+      textColor: "text-white",
+      description: "",
+    },
+    {
+      title: "Наружная Реклама",
+      imageSrc: "/images/smm.svg",
+      bgColor: "bg-black",
+      textColor: "text-default-grey",
+      description: "",
+    },
+    {
+      title: "Радио",
+      imageSrc: "/images/main-illustration.svg",
+      bgColor: "bg-default-grey",
+      textColor: "text-black",
+      description: "",
+    },
+  ];
+
+  const updateItem = (idx: number, field: keyof ServiceItem, value: string) => {
+    setItems((prev) =>
       prev.map((item, i) => (i === idx ? { ...item, [field]: value } : item)),
     );
   };
 
   const addItem = () =>
-    setItems((prev: any[]) => [
+    setItems((prev) => [
       ...prev,
-      { title: "", description: "", icon: "" },
+      { title: "", description: "", imageSrc: "", bgColor: "", textColor: "" },
     ]);
   const removeItem = (idx: number) =>
-    setItems((prev: any[]) => prev.filter((_, i) => i !== idx));
+    setItems((prev) => prev.filter((_, i) => i !== idx));
+
+  const resetItem = (idx: number) => {
+    const def = defaultItems[idx];
+    if (!def) return;
+    setItems((prev: any[]) =>
+      prev.map((item, i) =>
+        i === idx
+          ? {
+              title: def.title,
+              imageSrc: def.imageSrc,
+              bgColor: def.bgColor,
+              textColor: def.textColor,
+              description: item.description,
+            }
+          : item,
+      ),
+    );
+  };
+
+  const resetAll = () => {
+    setItems(
+      defaultItems.map((it) => ({
+        title: it.title,
+        imageSrc: it.imageSrc,
+        bgColor: it.bgColor,
+        textColor: it.textColor,
+      })),
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -336,6 +465,13 @@ function ServicesEditor({
           className="w-full px-4 py-2 border rounded-xl"
         />
       </div>
+      <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-xl text-sm">
+        <p className="font-medium mb-1">Рекомендации по изображениям услуг:</p>
+        <p>
+          Размер: 120×94 px. Формат: WebP (приоритет), SVG, PNG. Оптимизируйте
+          вес до ~15 КБ.
+        </p>
+      </div>
       {items.map((item: any, idx: number) => (
         <div key={idx} className="border p-4 rounded-xl space-y-2">
           <input
@@ -350,25 +486,49 @@ function ServicesEditor({
             placeholder="Описание"
             className="w-full px-4 py-2 border rounded-xl"
           />
-          <input
-            value={item.icon}
-            onChange={(e) => updateItem(idx, "icon", e.target.value)}
-            placeholder="Иконка (опционально)"
-            className="w-full px-4 py-2 border rounded-xl"
-          />
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => removeItem(idx)}
-          >
-            Удалить
-          </Button>
+          <div className="flex items-center gap-4">
+            <SafeImage
+              src={item.imageSrc}
+              alt={item.title}
+              width={120}
+              height={94}
+              className="flex-shrink-0 rounded border bg-gray-50"
+            />
+            <input
+              value={item.imageSrc}
+              onChange={(e) => updateItem(idx, "imageSrc", e.target.value)}
+              placeholder="/images/... или https://..."
+              className="flex-1 px-4 py-2 border rounded-xl"
+            />
+          </div>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => resetItem(idx)}
+            >
+              Сбросить к дефолту
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => removeItem(idx)}
+            >
+              Удалить
+            </Button>
+          </div>
         </div>
       ))}
-      <Button type="button" variant="outline" size="sm" onClick={addItem}>
-        + Добавить услугу
-      </Button>
+      <div className="flex gap-2">
+        <Button type="button" variant="outline" size="sm" onClick={addItem}>
+          + Добавить услугу
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={resetAll}>
+          Сбросить все к дефолту
+        </Button>
+      </div>
       <div className="flex gap-3">
         <Button type="submit" variant="primary" size="md" loading={isLoading}>
           Сохранить
@@ -378,6 +538,22 @@ function ServicesEditor({
         </Button>
       </div>
     </form>
+  );
+}
+
+function ImageHint({ url }: { url: string }) {
+  if (!url) return null;
+  const isLikelyImage =
+    /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico|avif)($|\?)/i.test(url) ||
+    url.startsWith("/images/") ||
+    url.includes("avatars.mds.yandex") ||
+    url.includes("imgur.com") ||
+    url.includes("images.unsplash");
+  if (isLikelyImage) return null;
+  return (
+    <p className="text-xs text-amber-600 mt-1">
+      ⚠ URL не похож на изображение. Убедитесь, что ссылка ведёт на картинку.
+    </p>
   );
 }
 
@@ -402,9 +578,15 @@ function CasesEditor({
   };
 
   const addItem = () =>
-    setItems((prev: any[]) => [...prev, { text: "", link: "" }]);
+    setItems((prev: any[]) => [...prev, { text: "", link: "", imageSrc: "" }]);
   const removeItem = (idx: number) =>
     setItems((prev: any[]) => prev.filter((_, i) => i !== idx));
+
+  const resetItem = (idx: number) => {
+    setItems((prev: any[]) =>
+      prev.map((item, i) => (i === idx ? { ...item, imageSrc: "" } : item)),
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -435,6 +617,13 @@ function CasesEditor({
           className="w-full px-4 py-2 border rounded-xl"
         />
       </div>
+      <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-xl text-sm">
+        <p className="font-medium mb-1">Рекомендации по изображениям кейсов:</p>
+        <p>
+          Размер: 400×200 px (cover). Формат: WebP (приоритет), JPG, PNG.
+          Оптимизируйте вес до ~30 КБ.
+        </p>
+      </div>
       {items.map((item: any, idx: number) => (
         <div key={idx} className="border p-4 rounded-xl space-y-2">
           <textarea
@@ -450,6 +639,54 @@ function CasesEditor({
             placeholder="Ссылка"
             className="w-full px-4 py-2 border rounded-xl"
           />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Изображение (опционально)
+            </label>
+            {item.imageSrc ? (
+              <>
+                <div className="flex items-center gap-4">
+                  <SafeImage
+                    src={item.imageSrc}
+                    alt=""
+                    width={80}
+                    height={80}
+                    className="flex-shrink-0 rounded border bg-gray-50"
+                  />
+                  <input
+                    value={item.imageSrc}
+                    onChange={(e) =>
+                      updateItem(idx, "imageSrc", e.target.value)
+                    }
+                    placeholder="/images/... или https://..."
+                    className="flex-1 px-4 py-2 border rounded-xl"
+                  />
+                </div>
+                <ImageHint url={item.imageSrc} />
+              </>
+            ) : (
+              <>
+                <input
+                  value={item.imageSrc}
+                  onChange={(e) => updateItem(idx, "imageSrc", e.target.value)}
+                  placeholder="/images/... или https://..."
+                  className="w-full px-4 py-2 border rounded-xl"
+                />
+                <ImageHint url={item.imageSrc} />
+              </>
+            )}
+            {item.imageSrc && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => resetItem(idx)}
+                className="mt-2"
+              >
+                Сбросить изображение
+              </Button>
+            )}
+          </div>
           <Button
             type="button"
             variant="ghost"
@@ -666,10 +903,14 @@ function CreateContentBlock({ onCreated }: { onCreated: () => void }) {
           value={status}
           onChange={(e) => setStatus(e.target.value)}
           className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-default-lime"
+          required
         >
+          <option value="" disabled>
+            Выберите статус
+          </option>
           <option value="draft">Черновик</option>
           <option value="published">Опубликован</option>
-          <option value="archived">В архиве</option>
+          <option value="archived">Архив</option>
         </select>
       </div>
 
