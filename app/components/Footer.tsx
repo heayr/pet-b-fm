@@ -32,8 +32,8 @@ export default async function Footer() {
           </div>
 
           {/* Меню */}
-          <nav aria-label="Основное меню">
-            <ul className="flex flex-wrap justify-center gap-x-6 gap-y-4">
+          <nav className="content-center" aria-label="Основное меню">
+            <ul className="flex flex-wrap justify-center  gap-x-6 gap-y-4">
               {["О нас", "Услуги", "Портфолио", "Стоимость", "Блог"].map(
                 (item) => (
                   <li key={item}>
@@ -49,7 +49,7 @@ export default async function Footer() {
               <li>
                 <Link
                   href="/admin/content"
-                  className="text-default-grey px-4 py-2 text-lg rounded-full bg-default-lime text-black font-medium transition duration-300"
+                  className="px-4 py-2 text-lg rounded-full bg-default-lime text-black font-medium transition duration-300"
                 >
                   Модерация
                 </Link>
@@ -67,8 +67,8 @@ export default async function Footer() {
             <div className="space-y-3">
               <p className="text-default-grey text-base">
                 Email:{" "}
-                <a href="mailto:info@example.com" className="hover:underline">
-                  info@example.com
+                <a href="mailto:j.chur@inbox.ru" className="hover:underline">
+                  j.chur@inbox.ru
                 </a>
               </p>
               <p className="text-default-grey text-base">

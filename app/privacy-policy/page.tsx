@@ -34,7 +34,7 @@ export default function PrivacyPolicyPage() {
             хранит и защищает персональные данные пользователей сайта{" "}
             <a
               href="https://radiotochka.nologs.site"
-              className="text-default-lime hover:underline"
+              className="text-linnks hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -208,7 +208,7 @@ export default function PrivacyPolicyPage() {
             адрес электронной почты:{" "}
             <a
               href="mailto:info@radiotochka.nologs.site"
-              className="text-default-lime hover:underline"
+              className="text-linnks hover:underline"
             >
               info@radiotochka.nologs.site
             </a>
@@ -246,7 +246,7 @@ export default function PrivacyPolicyPage() {
               Email:{" "}
               <a
                 href="mailto:info@radiotochka.nologs.site"
-                className="text-default-lime hover:underline"
+                className="text-linnks hover:underline"
               >
                 info@radiotochka.nologs.site
               </a>
@@ -259,7 +259,7 @@ export default function PrivacyPolicyPage() {
               Связанные документы:{" "}
               <Link
                 href="/personal-data-consent"
-                className="text-default-lime hover:underline"
+                className="text-linnks hover:underline"
               >
                 Согласие на обработку персональных данных
               </Link>

@@ -32,7 +32,7 @@ export default function PersonalDataConsentPage() {
               Настоящим я, Пользователь сайта{" "}
               <a
                 href="https://radiotochka.nologs.site"
-                className="text-default-lime hover:underline"
+                className="text-links hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -157,10 +157,10 @@ export default function PersonalDataConsentPage() {
             Для реализации своих прав Пользователь может направить запрос на
             адрес электронной почты:{" "}
             <a
-              href="mailto:info@radiotochka.nologs.site"
-              className="text-default-lime hover:underline"
+              href="mailto:j.chur@inbox.ru"
+              className="text-links hover:underline"
             >
-              info@radiotochka.nologs.site
+              j.chur@inbox.ru
             </a>
           </p>
 
@@ -209,7 +209,7 @@ export default function PersonalDataConsentPage() {
               Связанные документы:{" "}
               <Link
                 href="/privacy-policy"
-                className="text-default-lime hover:underline"
+                className="text-links hover:underline"
               >
                 Политика конфиденциальности
               </Link>

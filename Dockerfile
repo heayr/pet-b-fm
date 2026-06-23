@@ -9,6 +9,10 @@ WORKDIR /app
 # Копируем файлы зависимостей
 COPY package.json ./
 
+# Переменные для Next.js (NEXT_PUBLIC_ встраиваются в клиентский бандл при сборке)
+ARG NEXT_PUBLIC_ACCESS_KEY_WEB_FORM
+ENV NEXT_PUBLIC_ACCESS_KEY_WEB_FORM=$NEXT_PUBLIC_ACCESS_KEY_WEB_FORM
+
 # Устанавливаем зависимости
 RUN npm install
 

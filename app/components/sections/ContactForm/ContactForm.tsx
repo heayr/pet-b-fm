@@ -114,11 +114,16 @@ export function ContactForm() {
                   ознакомление с{" "}
                   <Link
                     href="/privacy-policy"
-                    className="text-default-lime hover:underline font-medium"
+                    className="text-links hover:underline font-medium"
                   >
                     Политикой конфиденциальности
                   </Link>{" "}
-                  и условиями обработки персональных данных.
+                  и  <Link
+                    href="/personal-data-consent"
+                    className="text-links hover:underline font-medium"
+                  >
+                    Согласием на обработку персональных данных
+                  </Link>.
                 </span>
               </label>
 

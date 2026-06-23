@@ -25,7 +25,7 @@ function CaseCard({ text, link, imageSrc }: CaseCardProps) {
       <p className="text-black text-base leading-relaxed mb-6 flex-1">{text}</p>
       <Link
         href={link}
-        className="text-default-lime font-medium hover:underline self-start"
+        className="text-links font-medium hover:underline self-start"
       >
         Узнать больше
       </Link>
