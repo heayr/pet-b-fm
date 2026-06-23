@@ -15,19 +15,17 @@ export default async function LogoSection() {
 
   return (
     <div className="mt-fluid-section">
-      <div className="max-w-container mx-auto flex flex-wrap justify-center gap-fluid-section-gap">
-        {[0, 1, 2].map((row) =>
-          logos.map((logo, i) => (
-            <SafeImage
-              key={`${row}-${i}`}
-              src={logo.src}
-              alt={logo.alt}
-              width={125}
-              height={50}
-              className="flex-shrink-0"
-            />
-          )),
-        )}
+      <div className="max-w-container mx-auto flex flex-wrap justify-center items-center gap-6 md:gap-10">
+        {logos.map((logo, i) => (
+          <SafeImage
+            key={`logo-${i}`}
+            src={logo.src}
+            alt={logo.alt}
+            width={125}
+            height={50}
+            className="h-auto w-auto max-w-[100px] md:max-w-[125px]"
+          />
+        ))}
       </div>
     </div>
   );

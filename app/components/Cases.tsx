@@ -82,7 +82,7 @@ export default async function Cases() {
             ))}
           </div>
           {/* DEBUG */}
-          <div className="text-white text-xs mt-4 p-2 bg-gray-800 rounded space-y-1">
+          {/* <div className="text-white text-xs mt-4 p-2 bg-gray-800 rounded space-y-1">
             <div>DEBUG block: {block ? "найден" : "НЕ НАЙДЕН"}</div>
             <div>
               DEBUG content keys:{" "}
@@ -90,7 +90,7 @@ export default async function Cases() {
             </div>
             <div>DEBUG items count: {content?.items?.length ?? 0}</div>
             <div>DEBUG item[0]: {JSON.stringify(cases[0])}</div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>
