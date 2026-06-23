@@ -1,5 +1,5 @@
 import SafeImage from "./SafeImage";
-import { db } from "@/lib/db";
+import { getContentBlock } from "@/lib/services/content.service";
 
 const defaultLogos = [
   { src: "/images/dorozhnoe.svg", alt: "Логотип Дорожное Радио" },
@@ -7,10 +7,7 @@ const defaultLogos = [
 ] as const;
 
 export default async function LogoSection() {
-  const block = await db.contentBlock.findUnique({
-    where: { slug: "logo-section" },
-  });
-
+  const block = await getContentBlock("logo-section");
   const content = (block?.content ?? {}) as Record<string, unknown>;
   const logos = (content.logos as typeof defaultLogos) || defaultLogos;
 

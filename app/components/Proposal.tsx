@@ -1,8 +1,8 @@
 import SafeImage from "./SafeImage";
 import Link from "next/link";
-import { db } from "@/lib/db";
+import { getContentBlock } from "@/lib/services/content.service";
 
-const defaultProposal = {
+const DEFAULT_PROPOSAL = {
   title: "Давайте создавать вместе",
   description:
     "Напишите нам сегодня, чтобы узнать больше о наших маркетинговых продуктах, которые помогут вашему бизнесу расти",
@@ -10,15 +10,12 @@ const defaultProposal = {
 };
 
 export default async function Proposal() {
-  const block = await db.contentBlock.findUnique({
-    where: { slug: "proposal" },
-  });
-
+  const block = await getContentBlock("proposal");
   const raw = (block?.content ?? {}) as Record<string, unknown>;
-  const title = (raw.title as string) || defaultProposal.title;
+  const title = (raw.title as string) || DEFAULT_PROPOSAL.title;
   const description =
-    (raw.description as string) || defaultProposal.description;
-  const buttonText = (raw.buttonText as string) || defaultProposal.buttonText;
+    (raw.description as string) || DEFAULT_PROPOSAL.description;
+  const buttonText = (raw.buttonText as string) || DEFAULT_PROPOSAL.buttonText;
 
   return (
     <section className="mt-fluid-section mb-fluid-section">

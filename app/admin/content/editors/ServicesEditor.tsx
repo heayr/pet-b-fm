@@ -3,6 +3,7 @@
 import { useState } from "react";
 import SafeImage from "@/app/components/SafeImage";
 import Button from "@/app/components/Button";
+import { EditorFormFooter } from "@/app/components/ui/EditorFormFooter";
 import type { EditorProps } from "./editor-types";
 
 interface ServiceItem {
@@ -180,14 +181,7 @@ export function ServicesEditor({ block, onSave, onCancel }: EditorProps) {
           Сбросить все к дефолту
         </Button>
       </div>
-      <div className="flex gap-3">
-        <Button type="submit" variant="primary" size="md" loading={isLoading}>
-          Сохранить
-        </Button>
-        <Button type="button" variant="outline" size="md" onClick={onCancel}>
-          Отмена
-        </Button>
-      </div>
+      <EditorFormFooter isLoading={isLoading} onCancel={onCancel} />
     </form>
   );
 }

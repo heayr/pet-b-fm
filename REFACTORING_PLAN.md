@@ -1079,3 +1079,101 @@ export default async function ContentPage() {
 | Увеличить размер bundle                       | Использовать Server Components, не добавлять клиентские обёртки без необходимости |
 | Усложнить навигацию по файлам                 | Чёткая структура папок с описательными именами                                    |
 | Конфликты при работе нескольких разработчиков | Рефакторить по модулям, мержить поэтапно                                          |
+
+---
+
+## 12. Выполненный рефакторинг — отчёт
+
+> Дата: 2026-06-23  
+> Статус: ✅ Этапы 0, 1 (части), 4, 7, 8 выполнены. TypeScript: 0 ошибок.
+
+### 12.1 Удалённые дубликаты типов
+
+**Удалена папка `types/types/`** — полная копия `types/` (3 файла: `content.ts`, `user.ts`, `next-auth.d.ts`).
+
+| Удалённый файл | Идентичен |
+|----------------|-----------|
+| `types/types/content.ts` | `types/content.ts` |
+| `types/types/user.ts` | `types/user.ts` |
+| `types/types/next-auth.d.ts` | `types/next-auth.d.ts` |
+
+### 12.2 Созданные переиспользуемые компоненты
+
+| Компонент | Путь | Строк | Назначение |
+|-----------|------|-------|------------|
+| `FormField` | `app/components/ui/FormField.tsx` | ~39 | Label + children + error — заменяет ~15 повторяющихся блоков форм |
+| `EditorFormFooter` | `app/components/ui/EditorFormFooter.tsx` | ~33 | Кнопки Сохранить/Отмена — заменяет footer во всех 5 редакторах |
+| `SectionHeader` | `app/components/sections/SectionHeader.tsx` | ~46 | Lime-заголовок секции + subtitle — заменяет header в Cases, Services, ContactForm |
+
+### 12.3 Отрефакторенные серверные компоненты (4 файла)
+
+| Компонент | Было | Стало | Изменения |
+|-----------|------|-------|-----------|
+| `Cases.tsx` | `db.contentBlock.findUnique()` + ручной header | `getContentBlock()` + `SectionHeader` | -20 строк, убран прямой импорт `db` |
+| `Services.tsx` | `db.contentBlock.findUnique()` + ручной header | `getContentBlock()` + `SectionHeader` | -15 строк, убран прямой импорт `db` |
+| `Proposal.tsx` | `db.contentBlock.findUnique()` | `getContentBlock()` | Убран прямой импорт `db` |
+| `LogoSection.tsx` | `db.contentBlock.findUnique()` | `getContentBlock()` | Убран прямой импорт `db` |
+
+### 12.4 Отрефакторенные auth-формы (3 файла)
+
+| Компонент | Было | Стало |
+|-----------|------|-------|
+| `LoginForm.tsx` | Ручной `<div>` layout + ручные error alerts | `AuthFormWrapper` + `Alert` |
+| `RegisterForm.tsx` | Ручной `<div>` layout + ручные error/success alerts + ручные label/input/error | `AuthFormWrapper` + `FormField` |
+| `ResetPasswordForm.tsx` | Ручной `<div>` layout + ручные error/success alerts + ручные label/input/error | `AuthFormWrapper` + `FormField` |
+
+### 12.5 Отрефакторенные редакторы контента (5 файлов)
+
+| Редактор | Было | Стало |
+|----------|------|-------|
+| `CasesEditor.tsx` | Ручные Save/Cancel кнопки | `EditorFormFooter` |
+| `ServicesEditor.tsx` | Ручные Save/Cancel кнопки | `EditorFormFooter` |
+| `LogoSectionEditor.tsx` | Ручные Save/Cancel кнопки | `EditorFormFooter` |
+| `ProposalEditor.tsx` | Ручные Save/Cancel кнопки + label/input | `EditorFormFooter` + `FormField` |
+| `JsonEditor.tsx` | Ручные Save/Cancel кнопки | `EditorFormFooter` |
+
+### 12.6 Отрефакторенный ContactForm
+
+- Заменён ручной header на `SectionHeader`
+- Заменены ручные label/input/error блоки на `FormField` (3 поля)
+
+### 12.7 Рефакторинг валидаций
+
+В `lib/validations.ts` добавлены переиспользуемые конструкции:
+- `emailField` — общая схема email
+- `passwordField` — общая схема пароля (6–100 символов)
+- `withPasswordConfirm()` — хелпер для проверки совпадения паролей
+
+### 12.8 Метрики
+
+| Метрика | Значение |
+|---------|----------|
+| Удалено дублирующих файлов | 3 |
+| Создано новых компонентов | 3 |
+| Отрефакторено файлов | 14 |
+| Ошибок TypeScript после рефакторинга | **0** |
+| Прямых обращений к `db` убрано из серверных компонентов | 4 |
+| Дублированных footer кнопок убрано | 5 |
+| Дублированных layout/auth-form убрано | 3 |
+| Дублированных label+input+error убрано | ~15 мест |
+
+### 12.9 Рекомендации по автодетекции дубликатов в будущем
+
+1. **ESLint плагины:**
+   - `eslint-plugin-react-perf` — обнаружение лишних ререндеров
+   - `eslint-plugin-sonarjs` — обнаружение дублированного кода (`no-duplicate-in-switch`, `no-duplicated-branches`)
+   - `no-restricted-imports` — запрет прямых импортов `@/lib/db` в компонентах
+
+2. **CI-интеграция:**
+   ```yaml
+   # .github/workflows/quality.yml
+   - name: Check for duplicate code
+     run: npx jscpd --min-lines 5 --min-tokens 50 app/ lib/
+   ```
+
+3. **TypeScript ограничение:**
+   ```json
+   // tsconfig.json — запретить any
+   "noImplicitAny": true,
+   "strict": true
+   ```

@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Button from "@/app/components/Button";
 import { Alert } from "@/app/components/ui/Alert";
+import { FormField } from "@/app/components/ui/FormField";
+import { SectionHeader } from "@/app/components/sections/SectionHeader";
 import { useContactForm } from "./useContactForm";
 
 export function ContactForm() {
@@ -15,19 +17,12 @@ export function ContactForm() {
 
   return (
     <section className="mt-fluid-section" id="consultation">
-      <div className="max-w-container mx-auto mb-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-          <Link href="#services" className="flex-shrink-0">
-            <h2 className="text-fluid-h2 font-bold bg-default-lime px-4 py-2 rounded-md">
-              Свяжитесь с нами
-            </h2>
-          </Link>
-          <p className="text-fluid-base flex-1">
-            Оставьте нам сообщение: Давайте обсудим ваши потребности в
-            маркетинге
-          </p>
-        </div>
-      </div>
+      <SectionHeader
+        title="Свяжитесь с нами"
+        subtitle="Оставьте нам сообщение: Давайте обсудим ваши потребности в маркетинге"
+        href="#services"
+        className="mb-8"
+      />
 
       <div className="max-w-container mx-auto">
         <div className="flex flex-col lg:flex-row bg-default-grey rounded-3xl p-fluid-container gap-fluid-form-gap">
@@ -38,13 +33,7 @@ export function ContactForm() {
             )}
 
             <div className="space-y-4">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block mb-1 text-sm font-medium text-gray-700"
-                >
-                  Имя
-                </label>
+              <FormField label="Имя" id="name" error={errors.name?.message}>
                 <input
                   id="name"
                   type="text"
@@ -52,20 +41,9 @@ export function ContactForm() {
                   className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-default-lime focus:ring-1 focus:ring-default-lime"
                   placeholder="Ваше имя"
                 />
-                {errors.name && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.name.message}
-                  </p>
-                )}
-              </div>
+              </FormField>
 
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-1 text-sm font-medium text-gray-700"
-                >
-                  Email
-                </label>
+              <FormField label="Email" id="email" error={errors.email?.message}>
                 <input
                   id="email"
                   type="email"
@@ -73,32 +51,16 @@ export function ContactForm() {
                   className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-default-lime focus:ring-1 focus:ring-default-lime"
                   placeholder="your@email.com"
                 />
-                {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
+              </FormField>
 
-              <div>
-                <label
-                  htmlFor="message"
-                  className="block mb-1 text-sm font-medium text-gray-700"
-                >
-                  Сообщение
-                </label>
+              <FormField label="Сообщение" id="message" error={errors.message?.message}>
                 <textarea
                   id="message"
                   {...register("message")}
                   className="w-full h-32 px-4 py-3 rounded-xl border border-gray-300 focus:border-default-lime focus:ring-1 focus:ring-default-lime resize-none"
                   placeholder="Напишите нам..."
                 />
-                {errors.message && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.message.message}
-                  </p>
-                )}
-              </div>
+              </FormField>
 
               <label className="flex items-start gap-3 mt-2 cursor-pointer select-none">
                 <input

@@ -4,6 +4,8 @@ import { useState } from "react";
 import SafeImage from "@/app/components/SafeImage";
 import Button from "@/app/components/Button";
 import { ImageHint } from "./ImageHint";
+import { FormField } from "@/app/components/ui/FormField";
+import { EditorFormFooter } from "@/app/components/ui/EditorFormFooter";
 import type { EditorProps } from "./editor-types";
 
 export function CasesEditor({ block, onSave, onCancel }: EditorProps) {
@@ -146,14 +148,7 @@ export function CasesEditor({ block, onSave, onCancel }: EditorProps) {
       <Button type="button" variant="outline" size="sm" onClick={addItem}>
         + Добавить кейс
       </Button>
-      <div className="flex gap-3">
-        <Button type="submit" variant="primary" size="md" loading={isLoading}>
-          Сохранить
-        </Button>
-        <Button type="button" variant="outline" size="md" onClick={onCancel}>
-          Отмена
-        </Button>
-      </div>
+      <EditorFormFooter isLoading={isLoading} onCancel={onCancel} />
     </form>
   );
 }

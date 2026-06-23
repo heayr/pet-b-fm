@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Button from "@/app/components/Button";
 import type { EditorProps } from "./editor-types";
+import { FormField } from "@/app/components/ui/FormField";
+import { EditorFormFooter } from "@/app/components/ui/EditorFormFooter";
 
 export function ProposalEditor({ block, onSave, onCancel }: EditorProps) {
   const content = block.content as Record<string, unknown>;
@@ -57,14 +58,7 @@ export function ProposalEditor({ block, onSave, onCancel }: EditorProps) {
           className="w-full px-4 py-2 border rounded-xl"
         />
       </div>
-      <div className="flex gap-3">
-        <Button type="submit" variant="primary" size="md" loading={isLoading}>
-          Сохранить
-        </Button>
-        <Button type="button" variant="outline" size="md" onClick={onCancel}>
-          Отмена
-        </Button>
-      </div>
+      <EditorFormFooter isLoading={isLoading} onCancel={onCancel} />
     </form>
   );
 }

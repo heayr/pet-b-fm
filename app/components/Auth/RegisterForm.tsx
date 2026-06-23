@@ -7,6 +7,8 @@ import { registerUser } from "@/lib/actions/auth-actions";
 import { useState } from "react";
 import Link from "next/link";
 import Button from "@/app/components/Button";
+import { AuthFormWrapper } from "@/app/components/auth/AuthFormWrapper";
+import { FormField } from "@/app/components/ui/FormField";
 
 export default function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
@@ -45,85 +47,58 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6 text-center">Регистрация</h2>
-
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4">
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-4">
-          {success}
-        </div>
-      )}
-
+    <AuthFormWrapper
+      title="Регистрация"
+      error={error}
+      success={success}
+      footer={
+        <span>
+          Уже есть аккаунт?{" "}
+          <Link
+            href="/auth/login"
+            className="text-black font-medium hover:underline"
+          >
+            Войти
+          </Link>
+        </span>
+      }
+    >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Имя
-          </label>
+        <FormField label="Имя" id="name" error={errors.name?.message}>
           <input
             {...register("name")}
             type="text"
             placeholder="Иван Иванов"
             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-default-lime"
           />
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-          )}
-        </div>
+        </FormField>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Email
-          </label>
+        <FormField label="Email" id="email" error={errors.email?.message}>
           <input
             {...register("email")}
             type="email"
             placeholder="your@email.com"
             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-default-lime"
           />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-          )}
-        </div>
+        </FormField>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Пароль
-          </label>
+        <FormField label="Пароль" id="password" error={errors.password?.message}>
           <input
             {...register("password")}
             type="password"
             placeholder="Минимум 6 символов"
             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-default-lime"
           />
-          {errors.password && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
+        </FormField>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Подтверждение пароля
-          </label>
+        <FormField label="Подтверждение пароля" id="confirmPassword" error={errors.confirmPassword?.message}>
           <input
             {...register("confirmPassword")}
             type="password"
             placeholder="Повторите пароль"
             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-default-lime"
           />
-          {errors.confirmPassword && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.confirmPassword.message}
-            </p>
-          )}
-        </div>
+        </FormField>
 
         <Button
           type="submit"
@@ -135,16 +110,6 @@ export default function RegisterForm() {
           Зарегистрироваться
         </Button>
       </form>
-
-      <p className="text-center mt-6 text-sm text-gray-600">
-        Уже есть аккаунт?{" "}
-        <Link
-          href="/auth/login"
-          className="text-black font-medium hover:underline"
-        >
-          Войти
-        </Link>
-      </p>
-    </div>
+    </AuthFormWrapper>
   );
 }

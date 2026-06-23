@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Button from "@/app/components/Button";
 import type { EditorProps } from "./editor-types";
+import { EditorFormFooter } from "@/app/components/ui/EditorFormFooter";
 
 export function JsonEditor({ block, onSave, onCancel }: EditorProps) {
   const [json, setJson] = useState(JSON.stringify(block.content, null, 2));
@@ -28,14 +28,7 @@ export function JsonEditor({ block, onSave, onCancel }: EditorProps) {
         rows={10}
         className="w-full px-4 py-2 border rounded-xl font-mono text-sm"
       />
-      <div className="flex gap-3">
-        <Button type="submit" variant="primary" size="md" loading={isLoading}>
-          Сохранить
-        </Button>
-        <Button type="button" variant="outline" size="md" onClick={onCancel}>
-          Отмена
-        </Button>
-      </div>
+      <EditorFormFooter isLoading={isLoading} onCancel={onCancel} />
     </form>
   );
 }

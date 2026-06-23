@@ -11,6 +11,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Button from "@/app/components/Button";
+import { AuthFormWrapper } from "@/app/components/auth/AuthFormWrapper";
+import { FormField } from "@/app/components/ui/FormField";
 
 export default function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -52,85 +54,64 @@ export default function ResetPasswordForm() {
 
   if (!token) {
     return (
-      <div className="w-full max-w-md mx-auto p-6">
-        <h2 className="text-2xl font-bold mb-6 text-center">Сброс пароля</h2>
-        <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-xl">
-          Недействительная ссылка для сброса пароля. Пожалуйста, запросите
-          новую.
-        </div>
-        <p className="text-center mt-6">
+      <AuthFormWrapper
+        title="Сброс пароля"
+        footer={
           <Link
             href="/auth/forgot-password"
             className="text-black font-medium hover:underline"
           >
             Запросить новую ссылку
           </Link>
-        </p>
-      </div>
+        }
+      >
+        <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-xl">
+          Недействительная ссылка для сброса пароля. Пожалуйста, запросите
+          новую.
+        </div>
+      </AuthFormWrapper>
     );
   }
 
   return (
-    <div className="w-full max-w-md mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6 text-center">Новый пароль</h2>
-
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4">
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-4">
-          {success}
-          <div className="mt-3">
-            <Link
-              href="/auth/login"
-              className="text-green-800 font-medium underline"
-            >
-              Войти в систему
-            </Link>
-          </div>
-        </div>
-      )}
-
+    <AuthFormWrapper
+      title="Новый пароль"
+      error={error}
+      success={
+        success
+          ? `${success} Войти в систему можно по ссылке ниже.`
+          : undefined
+      }
+      footer={
+        <Link
+          href="/auth/login"
+          className="text-black font-medium hover:underline"
+        >
+          Вернуться ко входу
+        </Link>
+      }
+    >
       {!success && (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <input type="hidden" {...register("token")} />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Новый пароль
-            </label>
+          <FormField label="Новый пароль" id="password" error={errors.password?.message}>
             <input
               {...register("password")}
               type="password"
               placeholder="Минимум 6 символов"
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-default-lime"
             />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
+          </FormField>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Подтверждение пароля
-            </label>
+          <FormField label="Подтверждение пароля" id="confirmPassword" error={errors.confirmPassword?.message}>
             <input
               {...register("confirmPassword")}
               type="password"
               placeholder="Повторите пароль"
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-default-lime"
             />
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-          </div>
+          </FormField>
 
           <Button
             type="submit"
@@ -143,6 +124,6 @@ export default function ResetPasswordForm() {
           </Button>
         </form>
       )}
-    </div>
+    </AuthFormWrapper>
   );
 }

@@ -1,5 +1,35 @@
 import { z } from "zod";
 
+// ─── Reusable field schemas (DRY) ────────────────────────────────────
+
+/** Email field, used in login, register, forgot-password */
+const emailField = z
+  .string()
+  .min(1, "Email обязателен")
+  .email("Введите корректный email");
+
+/** Password field (6–100 chars), used in register, reset, change */
+const passwordField = z
+  .string()
+  .min(6, "Пароль должен быть не менее 6 символов")
+  .max(100, "Пароль слишком длинный");
+
+/**
+ * Creates a refine schema that checks password === confirmPassword.
+ * Used in register, reset-password, and change-password schemas.
+ */
+function withPasswordConfirm(
+  schema: z.ZodObject<Record<string, z.ZodTypeAny>>,
+) {
+  return schema.refine(
+    (data) => data.password === data.confirmPassword,
+    {
+      message: "Пароли не совпадают",
+      path: ["confirmPassword"],
+    },
+  );
+}
+
 export const loginSchema = z.object({
   email: z
     .string()
