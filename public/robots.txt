@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /dashboard/
+Disallow: /_next/
+Disallow: /private/
+
+Sitemap: https://pet-b-fm.ru/sitemap.xml
+Host: https://pet-b-fm.ru
