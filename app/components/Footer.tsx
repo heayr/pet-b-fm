@@ -49,7 +49,7 @@ export default async function Footer() {
               <li>
                 <Link
                   href="/admin/content"
-                  className="text-default-grey px-4 py-2 text-lg rounded-full bg-default-lime text-dark font-medium transition duration-300"
+                  className="text-default-grey px-4 py-2 text-lg rounded-full bg-default-lime text-black font-medium transition duration-300"
                 >
                   Модерация
                 </Link>

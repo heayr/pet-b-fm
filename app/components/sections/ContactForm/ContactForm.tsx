@@ -7,7 +7,7 @@ import { Alert } from "@/app/components/ui/Alert";
 import { useContactForm } from "./useContactForm";
 
 export function ContactForm() {
-  const { form, onSubmit, error, success, isLoading } = useContactForm();
+  const { form, onSubmit, error, success, isLoading, isConsentAccepted, setIsConsentAccepted } = useContactForm();
   const {
     register,
     formState: { errors },
@@ -100,12 +100,35 @@ export function ContactForm() {
                 )}
               </div>
 
+              <label className="flex items-start gap-3 mt-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={isConsentAccepted}
+                  onChange={(e) => setIsConsentAccepted(e.target.checked)}
+                  className="mt-0.5 h-5 w-5 shrink-0 appearance-none rounded-md border-2 border-gray-300 bg-white checked:bg-default-lime checked:border-default-lime focus:outline-none focus:ring-2 focus:ring-default-lime focus:ring-offset-2 transition-colors duration-200"
+                />
+                <span className="text-sm text-gray-600 leading-relaxed">
+                  Я даю согласие на обработку моих персональных данных, указанных
+                  в настоящей форме, в целях обработки обращения, предоставления
+                  обратной связи и исполнения запросов пользователя. Подтверждаю
+                  ознакомление с{" "}
+                  <Link
+                    href="/privacy-policy"
+                    className="text-default-lime hover:underline font-medium"
+                  >
+                    Политикой конфиденциальности
+                  </Link>{" "}
+                  и условиями обработки персональных данных.
+                </span>
+              </label>
+
               <Button
                 type="submit"
                 variant="primary"
                 size="lg"
-                className="mt-6 w-full h-14"
+                className="mt-4 w-full h-14"
                 loading={isLoading}
+                disabled={!isConsentAccepted}
               >
                 Отправить
               </Button>
