@@ -11,7 +11,8 @@ export default async function LogoSection() {
     where: { slug: "logo-section" },
   });
 
-  const logos = (block?.content?.logos as typeof defaultLogos) || defaultLogos;
+  const content = (block?.content ?? {}) as Record<string, unknown>;
+  const logos = (content.logos as typeof defaultLogos) || defaultLogos;
 
   return (
     <div className="mt-fluid-section">

@@ -9,7 +9,7 @@ import Button from "@/app/components/Button";
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const token = searchParams.get("token");
+  const token = searchParams?.get("token") ?? null;
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading",
   );

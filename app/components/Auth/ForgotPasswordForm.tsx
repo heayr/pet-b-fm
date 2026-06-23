@@ -10,6 +10,7 @@ import { forgotPasswordAction } from "@/lib/actions/auth-actions";
 import { useState } from "react";
 import Link from "next/link";
 import Button from "@/app/components/Button";
+import { AuthFormWrapper } from "@/app/components/auth/AuthFormWrapper";
 
 export default function ForgotPasswordForm() {
   const [error, setError] = useState<string | null>(null);
@@ -46,21 +47,19 @@ export default function ForgotPasswordForm() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6 text-center">Сброс пароля</h2>
-
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4">
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-4">
-          {success}
-        </div>
-      )}
-
+    <AuthFormWrapper
+      title="Сброс пароля"
+      error={error}
+      success={success}
+      footer={
+        <Link
+          href="/auth/login"
+          className="text-black font-medium hover:underline"
+        >
+          Вернуться ко входу
+        </Link>
+      }
+    >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -87,15 +86,6 @@ export default function ForgotPasswordForm() {
           Отправить ссылку
         </Button>
       </form>
-
-      <p className="text-center mt-6 text-sm text-gray-600">
-        <Link
-          href="/auth/login"
-          className="text-black font-medium hover:underline"
-        >
-          Вернуться ко входу
-        </Link>
-      </p>
-    </div>
+    </AuthFormWrapper>
   );
 }

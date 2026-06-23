@@ -1,0 +1,71 @@
+---
+title: "База данных"
+description: "Схема PostgreSQL, модели Prisma, ER-диаграмма и стратегия миграций"
+---
+
+# База данных
+
+## Технологии
+
+- **PostgreSQL** (prod/dev)
+- **Prisma ORM** — Type-safe клиент, миграции
+- **er диаграмма:** генерируется через `prisma-erd` → `docs/diagrams/er.mmd`
+
+## Модели
+
+### Пользователи и авторизация
+
+| Модель              | Назначение                              |
+| :------------------ | :-------------------------------------- |
+| `User`              | Пользователь, роли, 2FA флаг            |
+| `Account`           | OAuth-аккаунты (для next-auth)          |
+| `Session`           | Сессии (не используется, JWT стратегия) |
+| `VerificationToken` | Подтверждение email, сброс пароля       |
+| `TwoFactorToken`    | Резервные коды 2FA                      |
+
+### Контент
+
+| Модель           | Назначение                                 |
+| :--------------- | :----------------------------------------- |
+| `ContentBlock`   | Блоки контента (slug, title, JSON, статус) |
+| `ContentHistory` | Версионность (история изменений)           |
+
+### Аудит
+
+| Модель     | Назначение                                         |
+| :--------- | :------------------------------------------------- |
+| `AuditLog` | Логи действий (login, content_update, role_change) |
+
+## Enums
+
+```prisma
+enum UserRole {
+  super_admin
+  admin
+  moderator
+  user
+}
+
+enum ContentStatus {
+  draft
+  published
+  archived
+}
+```
+
+## Связи
+
+- `User 1—* Account` (Cascade delete)
+- `User 1—* Session` (Cascade delete)
+- `User 1—* AuditLog` (Cascade delete)
+- `User 1—* ContentHistory` (SetNull при удалении)
+- `ContentBlock 1—* ContentHistory` (Cascade delete)
+
+## Миграции
+
+```bash
+npx prisma migrate dev --name init
+npx prisma migrate deploy
+```
+
+ER-диаграмма: `docs/diagrams/er.mmd`

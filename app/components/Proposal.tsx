@@ -14,10 +14,11 @@ export default async function Proposal() {
     where: { slug: "proposal" },
   });
 
-  const content = block?.content || defaultProposal;
-  const title = content.title || defaultProposal.title;
-  const description = content.description || defaultProposal.description;
-  const buttonText = content.buttonText || defaultProposal.buttonText;
+  const raw = (block?.content ?? {}) as Record<string, unknown>;
+  const title = (raw.title as string) || defaultProposal.title;
+  const description =
+    (raw.description as string) || defaultProposal.description;
+  const buttonText = (raw.buttonText as string) || defaultProposal.buttonText;
 
   return (
     <section className="mt-fluid-section mb-fluid-section">

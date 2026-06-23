@@ -9,7 +9,14 @@
     "lint": "next lint",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:seed": "prisma db seed"
+    "prisma:seed": "prisma db seed",
+    "docs:dev": "cognidocs dev",
+    "docs:build": "cognidocs build --static-export",
+    "docs:introspect": "node -e \"require('fs').mkdirSync('docs/architecture', {recursive:true}); console.log('Run: npx next-introspect scan --output docs/architecture/routing.json')\"",
+    "docs:openapi": "node -e \"require('fs').mkdirSync('docs/api', {recursive:true}); console.log('Run: npx nextjs-auto-swagger generate --output docs/api/openapi.yaml')\"",
+    "docs:onboard": "node -e \"require('fs').mkdirSync('docs/diagrams', {recursive:true}); console.log('Run: npx dev-onboarder generate')\"",
+    "docs:all": "npm run docs:introspect && npm run docs:openapi && npm run docs:build",
+    "docs:er": "npx prisma-erd --output docs/diagrams/er.mmd"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

@@ -133,12 +133,7 @@ async function main() {
     });
 
     if (existingBlock) {
-      // Update existing block with correct structure
-      await prisma.contentBlock.update({
-        where: { slug: block.slug },
-        data: { content: block.content, title: block.title },
-      });
-      console.log(`♻️  Блок "${block.slug}" обновлён`);
+      console.log(`⚠️  Блок "${block.slug}" уже существует, пропускаем...`);
     } else {
       await prisma.contentBlock.create({
         data: block,

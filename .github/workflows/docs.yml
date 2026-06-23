@@ -1,0 +1,63 @@
+name: Documentation CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports: [5432:5432]
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      NODE_ENV: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - run: npm ci
+      - run: npm run prisma:generate
+      - run: npm run prisma:migrate deploy
+
+      - name: Install documentation tools
+        run: npm install -D cognidocs dev-onboarder next-introspect nextjs-auto-swagger prisma-erd
+
+      - name: Generate routing schema
+        run: npx next-introspect scan --output docs/architecture/routing.json
+
+      - name: Generate OpenAPI specs
+        run: npx nextjs-auto-swagger generate --output docs/api/openapi.yaml
+
+      - name: Generate ER diagram
+        run: npx prisma-erd --output docs/diagrams/er.mmd
+
+      - name: Build docs site
+        run: npx cognidocs build --static-export
+
+      - name: Upload docs artifact
+        uses: actions/upload-pages-artifact@v3
+        if: github.ref == 'refs/heads/main'
+        with:
+          path: ./docs-dist

@@ -1,0 +1,32 @@
+---
+title: "App Router"
+description: "Структура маршрутизации проекта на Next.js 15"
+---
+
+# App Router
+
+Проект использует **App Router** (Next.js 15+). Схема автоматически генерируется через `next-introspect`.
+
+## Основные маршруты
+
+| Путь             | Назначение       | Тип                       |
+| :--------------- | :--------------- | :------------------------ |
+| `/`              | Главная страница | Server Component          |
+| `/auth/login`    | Вход             | Server Component          |
+| `/auth/register` | Регистрация      | Server Component          |
+| `/dashboard`     | Личный кабинет   | Server Component + Client |
+| `/admin`         | Админ-панель     | Server Component + Client |
+| `/api/auth`      | NextAuth API     | Route Handler             |
+
+## Middleware
+
+Защита маршрутов на уровне middleware (`middleware.ts`):
+
+- Публичные маршруты: `/`, `/auth/*`, `/api/auth`
+- Защита `/admin` по ролям: `super_admin`, `admin`, `moderator`
+- Защита `/dashboard` для авторизованных
+
+## Server vs Client Components
+
+- Layouts и pages — Server Components по умолчанию
+- `'use client'` добавляется для интерактивных компонентов

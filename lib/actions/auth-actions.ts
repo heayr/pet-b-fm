@@ -375,7 +375,8 @@ export async function verifyTwoFactor(input: TwoFactorInput & { email: string })
     return { error: validated.error.errors[0]?.message || "Ошибка валидации" };
   }
 
-  const { email, code } = validated.data;
+  const { email } = input;
+  const { code } = validated.data;
 
   const user = await db.user.findUnique({ where: { email } });
   if (!user?.twoFactorSecret) {

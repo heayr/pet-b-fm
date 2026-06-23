@@ -5,7 +5,7 @@ export async function createAuditLog(params: {
   action: string;
   entity?: string;
   entityId?: string;
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, unknown> | Record<string, never>;
 }) {
   try {
     const user = await db.user.findUnique({
@@ -23,7 +23,7 @@ export async function createAuditLog(params: {
         action: params.action,
         entity: params.entity,
         entityId: params.entityId,
-        metadata: params.metadata ?? {},
+        metadata: (params.metadata ?? {}) as Record<string, string>,
       },
     });
   } catch (error) {

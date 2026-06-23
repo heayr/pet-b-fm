@@ -1,20 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { setup2FA, confirm2FA, disable2FA } from "@/lib/actions/auth-actions";
+import { useState } from "react";
+import { setup2FA, confirm2FA } from "@/lib/actions/auth-actions";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { twoFactorSchema, type TwoFactorInput } from "@/lib/validations";
 import { useSession } from "next-auth/react";
 import Button from "@/app/components/Button";
+import { Alert } from "@/app/components/ui/Alert";
+import { Disable2FA } from "./Disable2FA";
+
+type Step = "check" | "show_secret" | "verify" | "done";
 
 export default function TwoFactorSetup() {
   const { data: session, update: updateSession } = useSession();
-  const [step, setStep] = useState<"check" | "show_secret" | "verify" | "done">(
-    "check",
-  );
-  const [secret, setSecret] = useState<string>("");
-  const [otpauthUrl, setOtpauthUrl] = useState<string>("");
+  const [step, setStep] = useState<Step>("check");
+  const [secret, setSecret] = useState("");
+  const [otpauthUrl, setOtpauthUrl] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,27 +33,25 @@ export default function TwoFactorSetup() {
 
   if (session.user.isTwoFactorEnabled) {
     return (
-      <div className="p-6 bg-white rounded-2xl border border-gray-200">
+      <Card>
         <h3 className="text-lg font-semibold mb-2">
           Двухфакторная аутентификация
         </h3>
         <p className="text-green-600 mb-4">2FA включена</p>
         <Disable2FA />
-      </div>
+      </Card>
     );
   }
 
   const handleSetup = async () => {
     setIsLoading(true);
     setError(null);
-
     const result = await setup2FA();
     if (result.error) {
       setError(result.error);
       setIsLoading(false);
       return;
     }
-
     setSecret(result.secret!);
     setOtpauthUrl(result.otpauth_url!);
     setStep("show_secret");
@@ -61,14 +61,12 @@ export default function TwoFactorSetup() {
   const handleConfirm = async (data: TwoFactorInput) => {
     setIsLoading(true);
     setError(null);
-
     const result = await confirm2FA({ ...data, secret });
     if (result.error) {
       setError(result.error);
       setIsLoading(false);
       return;
     }
-
     setStep("done");
     setIsLoading(false);
     await updateSession();
@@ -76,7 +74,7 @@ export default function TwoFactorSetup() {
 
   if (step === "check") {
     return (
-      <div className="p-6 bg-white rounded-2xl border border-gray-200">
+      <Card>
         <h3 className="text-lg font-semibold mb-2">
           Двухфакторная аутентификация
         </h3>
@@ -84,11 +82,7 @@ export default function TwoFactorSetup() {
           Защитите свой аккаунт с помощью 2FA. Потребуется приложение для
           аутентификации (Google Authenticator, Apple Passwords и т.д.).
         </p>
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4">
-            {error}
-          </div>
-        )}
+        {error && <Alert variant="error">{error}</Alert>}
         <Button
           onClick={handleSetup}
           variant="primary"
@@ -97,13 +91,13 @@ export default function TwoFactorSetup() {
         >
           Настроить 2FA
         </Button>
-      </div>
+      </Card>
     );
   }
 
   if (step === "show_secret") {
     return (
-      <div className="p-6 bg-white rounded-2xl border border-gray-200">
+      <Card>
         <h3 className="text-lg font-semibold mb-2">Настройка 2FA</h3>
         <ol className="list-decimal list-inside space-y-2 text-gray-600 mb-4">
           <li>Установите приложение для аутентификации</li>
@@ -130,11 +124,7 @@ export default function TwoFactorSetup() {
           После настройки приложения введите код подтверждения
         </p>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4">
-            {error}
-          </div>
-        )}
+        {error && <Alert variant="error">{error}</Alert>}
 
         <form onSubmit={handleSubmit(handleConfirm)} className="space-y-4">
           <div>
@@ -160,86 +150,25 @@ export default function TwoFactorSetup() {
             Подтвердить
           </Button>
         </form>
-      </div>
+      </Card>
     );
   }
 
   // step === "done"
   return (
-    <div className="p-6 bg-white rounded-2xl border border-gray-200">
+    <Card>
       <h3 className="text-lg font-semibold mb-2">
         Двухфакторная аутентификация
       </h3>
-      <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl">
-        2FA успешно включена!
-      </div>
-    </div>
+      <Alert variant="success">2FA успешно включена!</Alert>
+    </Card>
   );
 }
 
-function Disable2FA() {
-  const { update: updateSession } = useSession();
-  const [isOpen, setIsOpen] = useState(false);
-  const [code, setCode] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  if (!isOpen) {
-    return (
-      <Button onClick={() => setIsOpen(true)} variant="outline" size="sm">
-        Отключить 2FA
-      </Button>
-    );
-  }
-
-  const handleDisable = async () => {
-    setIsLoading(true);
-    setError(null);
-
-    const result = await disable2FA({ code });
-    if (result.error) {
-      setError(result.error);
-      setIsLoading(false);
-      return;
-    }
-
-    setIsOpen(false);
-    setIsLoading(false);
-    await updateSession();
-  };
-
+function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div className="space-y-3">
-      <p className="text-sm text-gray-600">
-        Введите код из приложения для отключения 2FA
-      </p>
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
-          {error}
-        </div>
-      )}
-      <div className="flex gap-2">
-        <input
-          type="text"
-          inputMode="numeric"
-          maxLength={6}
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          placeholder="000000"
-          className="flex-1 px-4 py-2 text-center tracking-widest border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-default-lime"
-        />
-        <Button
-          onClick={handleDisable}
-          variant="primary"
-          size="md"
-          loading={isLoading}
-        >
-          Отключить
-        </Button>
-        <Button onClick={() => setIsOpen(false)} variant="ghost" size="md">
-          Отмена
-        </Button>
-      </div>
+    <div className="p-6 bg-white rounded-2xl border border-gray-200">
+      {children}
     </div>
   );
 }

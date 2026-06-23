@@ -7,7 +7,7 @@ import Button from "@/app/components/Button";
 
 function AuthErrorContent() {
   const searchParams = useSearchParams();
-  const error = searchParams.get("error");
+  const error = searchParams?.get("error") ?? null;
 
   const errorMessages: Record<string, string> = {
     Configuration: "Ошибка конфигурации сервера.",

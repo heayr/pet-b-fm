@@ -34,6 +34,7 @@ services:
       - ./middleware.ts:/app/middleware.ts
       - ./prisma:/app/prisma
       - ./types:/app/types
+      - ./constants:/app/constants
       - ./.env.local:/app/.env.local
       - ./tsconfig.json:/app/tsconfig.json
       - ./tailwind.config.ts:/app/tailwind.config.ts

@@ -1,0 +1,67 @@
+---
+title: "Аутентификация и безопасность"
+description: "Схема аутентификации (NextAuth v5), 2FA, middleware и защита данных"
+---
+
+# Аутентификация и безопасность
+
+## NextAuth v5 с PrismaAdapter
+
+Конфигурация: [`auth.ts`](/auth.ts)
+
+### Провайдеры
+
+- **Credentials** — email + пароль + 2FA код
+- Адаптер: `@auth/prisma-adapter` (Prisma)
+
+### Сессии
+
+- Стратегия: **JWT**
+- Callbacks: `jwt` (обновление из БД), `session` (передача в client)
+
+## 2FA (Two-Factor Authentication)
+
+### Протокол
+
+- **TOTP** через `speakeasy` (Google Authenticator, Authy)
+- Резервные коды в модели `TwoFactorToken`
+
+### Поток
+
+1. Пользователь вводит email + пароль
+2. Если `isTwoFactorEnabled = true` — запрос кода
+3. Проверка `speakeasy.totp.verify()`
+4. Если неверно — проверка резервного кода из `TwoFactorToken`
+5. Успех → создание JWT сессии
+
+## Middleware
+
+Защита маршрутов в [`middleware.ts`](/middleware.ts):
+
+```typescript
+const publicRoutes = [
+  "/",
+  "/auth/login",
+  "/auth/register",
+  "/auth/forgot-password",
+  "/auth/reset-password",
+  "/auth/verify-email",
+  "/auth/error",
+  "/api/auth",
+];
+```
+
+### Ролевая модель (`UserRole`)
+
+| Роль          | Доступ                              |
+| :------------ | :---------------------------------- |
+| `super_admin` | Все разделы `/admin`                |
+| `admin`       | `/admin`, кроме супер-админ функций |
+| `moderator`   | Часть `/admin` (контент)            |
+| `user`        | `/dashboard`, публичные страницы    |
+
+## Валидация и защита данных
+
+- Zod-схемы: [`lib/validations.ts`](/lib/validations.ts)
+- Rate limiting: [`lib/rate-limit.ts`](/lib/rate-limit.ts)
+- Audit log: модель `AuditLog` + [`lib/audit.ts`](/lib/audit.ts)

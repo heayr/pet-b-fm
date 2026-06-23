@@ -6,7 +6,7 @@ import EditUserForm from "./EditUserForm";
 export default async function EditUserPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const session = await auth();
 
@@ -18,7 +18,8 @@ export default async function EditUserPage({
     redirect("/dashboard");
   }
 
-  const result = await getUserById(params.id);
+  const { id } = await params;
+  const result = await getUserById(id);
 
   if (result.error || !result.user) {
     redirect("/admin/users");

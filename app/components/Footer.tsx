@@ -1,12 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@/auth";
+import { ADMIN_ROLES } from "@/constants/roles";
 
 export default async function Footer() {
   const session = await auth();
-  const isAdmin = session?.user?.role
-    ? ["super_admin", "admin", "moderator"].includes(session.user.role)
-    : false;
+  const role = (session?.user?.role ?? "") as (typeof ADMIN_ROLES)[number];
+  const isAdmin = ADMIN_ROLES.includes(role);
 
   return (
     <footer className="bg-dark pt-fluid-section pb-8">
