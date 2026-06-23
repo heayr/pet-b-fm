@@ -1,6 +1,9 @@
 # Этап сборки
 FROM node:22-alpine AS builder
 
+# Устанавливаем OpenSSL для Prisma
+RUN apk add --no-cache openssl
+
 WORKDIR /app
 
 # Копируем файлы зависимостей
@@ -21,6 +24,9 @@ RUN npm run build
 
 # Финальный этап
 FROM node:22-alpine
+
+# Устанавливаем OpenSSL для Prisma (migrate deploy требует его на этапе runtime)
+RUN apk add --no-cache openssl
 
 WORKDIR /app
 

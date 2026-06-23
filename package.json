@@ -42,6 +42,7 @@
     "@types/react-dom": "^19.0.0",
     "@types/speakeasy": "^2.0.10",
     "autoprefixer": "^10.0.1",
+    "cognidocs": "^0.0.2",
     "eslint": "^8",
     "eslint-config-next": "15.2.0",
     "postcss": "^8",
