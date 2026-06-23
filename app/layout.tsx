@@ -24,19 +24,19 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Радиоточка" }],
   alternates: {
-    canonical: "https://pet-b-fm.ru",
+    canonical: "https://radiotochka.nologs.site",
   },
   openGraph: {
     title: "Радиоточка — рекламное агентство полного цикла",
     description:
       "Продвижение по всем направлениям: радио, наружная реклама, полиграфия, SMM и контент-маркетинг.",
-    url: "https://pet-b-fm.ru",
+    url: "https://radiotochka.nologs.site",
     siteName: "Радиоточка",
     type: "website",
     locale: "ru_RU",
     images: [
       {
-        url: "https://pet-b-fm.ru/images/main-logo.svg",
+        url: "https://radiotochka.nologs.site/images/main-logo.svg",
         width: 600,
         height: 515,
         alt: "Радиоточка",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     title: "Радиоточка — рекламное агентство полного цикла",
     description:
       "Продвижение по всем направлениям: радио, наружная реклама, полиграфия, SMM и контент-маркетинг.",
-    images: ["https://pet-b-fm.ru/images/main-logo.svg"],
+    images: ["https://radiotochka.nologs.site/images/main-logo.svg"],
   },
   robots: {
     index: true,
@@ -78,8 +78,8 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               name: "Радиоточка",
-              url: "https://pet-b-fm.ru",
-              logo: "https://pet-b-fm.ru/images/main-logo.svg",
+              url: "https://radiotochka.nologs.site",
+              logo: "https://radiotochka.nologs.site/images/main-logo.svg",
               email: "mailto:info@example.com",
               telephone: "+79271370750",
               address: {

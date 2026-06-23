@@ -4,10 +4,10 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 
 # Копируем файлы зависимостей
-COPY package.json yarn.lock ./
+COPY package.json ./
 
 # Устанавливаем зависимости
-RUN yarn install --frozen-lockfile
+RUN npm install
 
 # Копируем Prisma schema и генерируем клиент
 COPY prisma/schema.prisma ./prisma/
@@ -17,7 +17,7 @@ RUN npx prisma generate
 COPY . .
 
 # Собираем Next.js приложение
-RUN yarn build
+RUN npm run build
 
 # Финальный этап
 FROM node:22-alpine
@@ -35,4 +35,4 @@ COPY --from=builder /app/prisma ./prisma
 
 EXPOSE 3000
 
-CMD ["yarn", "start"]
+CMD ["npm", "start"]

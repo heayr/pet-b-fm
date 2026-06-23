@@ -7,5 +7,5 @@ Disallow: /dashboard/
 Disallow: /_next/
 Disallow: /private/
 
-Sitemap: https://pet-b-fm.ru/sitemap.xml
-Host: https://pet-b-fm.ru
+Sitemap: https://radiotochka.nologs.site/sitemap.xml
+# Host: https://radiotochka.nologs.site
