@@ -1,0 +1,63 @@
+{
+    "health": 92,
+    "uptime": 99.8,
+    "api_p95_ms": 145,
+    "bundle_size_kb": 187,
+    "security_score": "5/6",
+    "test_coverage": 34,
+    "docker_image_size_mb": 210,
+    "bugs_fixed_this_week": 10,
+    "bugs_total_this_week": 12,
+    "open_bugs": 4,
+    "avg_fix_time_days": 3.2,
+    "avg_fix_time_prev_days": 5.8,
+    "api_trend": [
+        {
+            "day": "Пн",
+            "ms": 148
+        },
+        {
+            "day": "Вт",
+            "ms": 155
+        },
+        {
+            "day": "Ср",
+            "ms": 160
+        },
+        {
+            "day": "Чт",
+            "ms": 152
+        },
+        {
+            "day": "Пт",
+            "ms": 158
+        },
+        {
+            "day": "Сб",
+            "ms": 145
+        },
+        {
+            "day": "Вс",
+            "ms": 143
+        }
+    ],
+    "bugs_trend": [
+        12,
+        10,
+        9,
+        8,
+        6,
+        5,
+        4
+    ],
+    "features_trend": [
+        5,
+        7,
+        8,
+        10,
+        12,
+        14,
+        16
+    ],
+    "last_updated": "2025-08-25T06:00:00Z"
+}

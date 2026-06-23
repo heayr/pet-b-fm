@@ -1,0 +1,43 @@
+name: "\U0001F4DD Auto-update README"
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # Каждый день в 06:00 UTC
+  workflow_dispatch: # Ручной запуск
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: "\U0001F4E5 Checkout"
+        uses: actions/checkout@v4
+
+      - name: "\U0001F7E2 Setup Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: "\U0001F4E6 Install dependencies"
+        run: npm ci --ignore-scripts
+
+      - name: "\U0001F4CA Fetch latest metrics (опционально)"
+        run: node scripts/fetch-metrics.js
+        continue-on-error: true
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          API_KEY: ${{ secrets.API_KEY }}
+
+      - name: "\U0001F504 Generate README"
+        run: node scripts/generate-readme.js
+
+      - name: "\U0001F4BE Commit changes"
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          # Коммит только если есть изменения
+          git diff --cached --quiet || git commit -m "docs: auto-update README [skip ci]"
+          git push

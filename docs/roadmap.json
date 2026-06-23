@@ -1,0 +1,58 @@
+{
+    "roadmap": [
+        {
+            "quarter": "Q3 2025",
+            "task": "Оптимизация бандла (Tree-shaking, Code-splitting)",
+            "priority": "critical",
+            "status": "done"
+        },
+        {
+            "quarter": "Q3 2025",
+            "task": "Рефакторинг Admin-панели (выделение общих компонентов)",
+            "priority": "high",
+            "status": "done"
+        },
+        {
+            "quarter": "Q3 2025",
+            "task": "Покрытие тестами до 60%",
+            "priority": "high",
+            "status": "in_progress"
+        },
+        {
+            "quarter": "Q4 2025",
+            "task": "GraphQL Federation для микросервисов",
+            "priority": "high",
+            "status": "planned"
+        },
+        {
+            "quarter": "Q4 2025",
+            "task": "Redis-кеш для API-запросов",
+            "priority": "medium",
+            "status": "planned"
+        },
+        {
+            "quarter": "Q4 2025",
+            "task": "WebSocket-уведомления в реальном времени",
+            "priority": "medium",
+            "status": "planned"
+        },
+        {
+            "quarter": "Q1 2026",
+            "task": "AI-ассистент для помощи жителям",
+            "priority": "low",
+            "status": "idea"
+        },
+        {
+            "quarter": "Q1 2026",
+            "task": "Мультиязычность (русский/английский)",
+            "priority": "low",
+            "status": "idea"
+        },
+        {
+            "quarter": "Q1 2026",
+            "task": "Мобильное PWA",
+            "priority": "low",
+            "status": "idea"
+        }
+    ]
+}

@@ -1,0 +1,62 @@
+{
+    "checks": [
+        {
+            "id": 1,
+            "name": "Snyk-скан зависимостей",
+            "icon": "🔍",
+            "status": "passed",
+            "description": "Snyk регулярно сканирует package-lock.json. Критических уязвимостей нет."
+        },
+        {
+            "id": 2,
+            "name": "Зависимости (npm audit)",
+            "icon": "📦",
+            "status": "warning",
+            "description": "Обнаружено 2 уязвимости низкого уровня в postcss и autoprefixer. Исправление预计 в следующем патче.",
+            "vulnerabilities": [
+                {
+                    "package": "postcss",
+                    "current_version": "8.x",
+                    "cve": "CVE-2023-XXXX",
+                    "severity": "low",
+                    "fix": "Обновить до 8.4.31+"
+                },
+                {
+                    "package": "autoprefixer",
+                    "current_version": "10.x",
+                    "cve": "CVE-2023-YYYY",
+                    "severity": "low",
+                    "fix": "Обновить до 10.4.16+"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Секреты в репозитории",
+            "icon": "🔑",
+            "status": "passed",
+            "description": ".env добавлен в .gitignore. Docker Secrets рекомендуются для продакшна. Нет утечек."
+        },
+        {
+            "id": 4,
+            "name": "OWASP Top 10",
+            "icon": "🛡️",
+            "status": "passed",
+            "description": "SQL-инъекции (Prisma ORM), XSS (React escaping), CSRF (NextAuth), аутентификация (bcrypt + 2FA)."
+        },
+        {
+            "id": 5,
+            "name": "HTTPS / HSTS",
+            "icon": "🔒",
+            "status": "passed",
+            "description": "TLS 1.3 через Traefik + Let's Encrypt. Автоматический SSL. HTTP→HTTPS редирект."
+        },
+        {
+            "id": 6,
+            "name": "Rate Limiting",
+            "icon": "🚫",
+            "status": "partial",
+            "description": "Rate limiting работает на API, но не применяется к WebSocket-соединениям и запросам через Traefik proxy (см. BUG-004)."
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+{
+    "bugs": [
+        {
+            "id": "BUG-001",
+            "title": "Кеш страниц не инвалидируется при обновлении контента через админку — пользователи видят старые данные до ручного сброса кеша в контейнере",
+            "severity": "high",
+            "status": "investigating",
+            "assignee": "@dev-team",
+            "created_at": "2025-08-15"
+        },
+        {
+            "id": "BUG-002",
+            "title": "WebSocket disconnect после 30 минут неактивности — уведомления перестают приходить без перезагрузки страницы",
+            "severity": "high",
+            "status": "investigating",
+            "assignee": "@backend",
+            "created_at": "2025-08-18"
+        },
+        {
+            "id": "BUG-003",
+            "title": "SSR hydration mismatch на странице профиля при использовании next-auth сессии — ошибка в консоли при первом рендере",
+            "severity": "low",
+            "status": "fixed",
+            "fix_version": "v0.2.1",
+            "assignee": "@frontend",
+            "created_at": "2025-08-20",
+            "fixed_at": "2025-08-22"
+        },
+        {
+            "id": "BUG-004",
+            "title": "Rate-limit на API /auth/* не работает при проксировании через Traefik — IP всегда ::ffff: из-за Docker-сети",
+            "severity": "low",
+            "status": "backlog",
+            "assignee": "@devops",
+            "created_at": "2025-08-22"
+        },
+        {
+            "id": "BUG-005",
+            "title": "Изображения в ContentBlock не сжимаются при загрузке — занимает лишний объём в PostgreSQL (JSONB)",
+            "severity": "low",
+            "status": "investigating",
+            "assignee": "@backend",
+            "created_at": "2025-08-24"
+        }
+    ]
+}

@@ -1,7 +1,121 @@
-<div align="center">
+#!/usr/bin/env node
 
-# 🏠 Радиоточка — Платформа маркетингово агенства
+/**
+ * Скрипт генерации README.md на основе данных из JSON-файлов.
+ *
+ * Использование:
+ *   node scripts/generate-readme.js
+ *   DATA_DIR=./docs node scripts/generate-readme.js
+ *
+ * Структура данных:
+ *   docs/dashboard-data.json      — Health, Uptime, метрики, тренды
+ *   docs/bugs.json                — Список багов
+ *   docs/roadmap.json             — Дорожная карта
+ *   docs/security-checklist.json  — Результаты проверок безопасности
+ */
 
+const fs = require("fs");
+const path = require("path");
+
+// ─── Конфигурация ────────────────────────────────────────────
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, "..", "docs");
+const OUTPUT = path.join(__dirname, "..", "README.md");
+
+// ─── Чтение JSON-файлов ─────────────────────────────────────
+function readJSON(filename) {
+    const filepath = path.join(DATA_DIR, filename);
+    if (!fs.existsSync(filepath)) {
+        console.error(`⚠️  Файл не найден: ${filepath}`);
+        return null;
+    }
+    return JSON.parse(fs.readFileSync(filepath, "utf-8"));
+}
+
+// ─── Утилиты ─────────────────────────────────────────────────
+function progressBar(percent, width = 20) {
+    const filled = Math.round((percent / 100) * width);
+    const empty = width - filled;
+    return "[" + "█".repeat(filled) + "░".repeat(empty) + "] " + percent + "%";
+}
+
+function healthEmoji(score) {
+    if (score >= 90) return "🟢";
+    if (score >= 70) return "🟡";
+    return "🔴";
+}
+
+function severityEmoji(severity) {
+    const map = {
+        critical: "🔴",
+        high: "🟠",
+        medium: "🟡",
+        low: "🔵",
+    };
+    return map[severity] || "⚪";
+}
+
+function statusEmoji(status) {
+    const map = {
+        done: "✅ Выполнено",
+        in_progress: "🔧 В работе",
+        planned: "📋 Запланировано",
+        idea: "💡 Идея",
+    };
+    return map[status] || status;
+}
+
+function priorityLabel(priority) {
+    const map = {
+        critical: "🔴 Критический",
+        high: "🟠 Высокий",
+        medium: "🟡 Средний",
+        low: "🔵 Низкий",
+    };
+    return map[priority] || priority;
+}
+
+function bugSeverityBadge(severity) {
+    const map = {
+        high: "🟠 High",
+        low: "🟡 Low",
+        critical: "🔴 Critical",
+    };
+    return map[severity] || severity;
+}
+
+function bugStatusBadge(status) {
+    const map = {
+        investigating: "🟡 Investigating",
+        fixed: "🟢 Fixed",
+        backlog: "🔴 Backlog",
+    };
+    return map[status] || status;
+}
+
+function securityCheckBadge(status) {
+    const map = {
+        passed: "✅ Пройдено",
+        warning: "⚠️",
+        failed: "❌ Не пройдено",
+        partial: "⚠️ Частично",
+    };
+    return map[status] || status;
+}
+
+function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toISOString().split("T")[0];
+}
+
+// ─── Генерация секций ───────────────────────────────────────
+
+function generateHeader() {
+    return `<div align="center">
+
+# 🏠 Балаково FM — Платформа для жителей
+
+**Современный веб-портал сообщества Балаково**
+*Новости, услуги, управление контентом и авторизация — всё в одном месте.*
 
 ---
 
@@ -16,53 +130,175 @@
 ![Traefik](https://img.shields.io/badge/Traefik-Proxy-E33B33?style=for-the-badge&logo=traefik&logoColor=white)
 ![License](https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge)
 
-</div>
+</div>`;
+}
 
----
+function generateStatusSection(data) {
+    if (!data) return "<!-- Данные dashboard-data.json не найдены -->";
 
-## 📊 Состояние проекта
+    const apiTrendLines = data.api_trend || [];
+    const trendAscii = apiTrendLines.length
+        ? apiTrendLines.map((t) => `    ${String(t.ms).padStart(3)} │`).join("\n")
+        : "    Нет данных";
+
+    return `## 📊 Состояние проекта
 
 > 🤖 Данные обновляются автоматически через GitHub Actions раз в 24 часа.
 > 🌐 **Продакшн**: [radiotochka.nologs.site](https://radiotochka.nologs.site)
 
 | Метрика | Значение | Статус |
 |:--------|:--------:|:------:|
-| **🏥 Health** | 92% | 🟢 Отлично |
-| **⏱️ Uptime** | 99.8% | 🟢 Стабильно |
-| **⚡ Скорость API** | 145 ms (p95) | 🟢 Хорошо |
-| **📦 Размер Docker-образа** | ~210 MB (gzipped) | 🟢 Оптимально |
-| **🔒 Безопасность** | 5/6 пройдено | 🟡 Требует внимания |
-| **🧪 Покрытие тестами** | 34% | 🔴 Нужно улучшить |
+| **🏥 Health** | ${data.health}% | ${healthEmoji(data.health)} ${data.health >= 90 ? "Отлично" : data.health >= 70 ? "Хорошо" : "Плохо"} |
+| **⏱️ Uptime** | ${data.uptime}% | ${data.uptime >= 99.5 ? "🟢 Стабильно" : "🟡 Есть проблемы"} |
+| **⚡ Скорость API** | ${data.api_p95_ms} ms (p95) | ${data.api_p95_ms <= 200 ? "🟢 Хорошо" : "🟡 Норма"} |
+| **📦 Размер Docker-образа** | ~${data.docker_image_size_mb} MB (gzipped) | 🟢 Оптимально |
+| **🔒 Безопасность** | ${data.security_score} пройдено | ${data.security_score === "6/6" ? "🟢 Отлично" : "🟡 Требует внимания"} |
+| **🧪 Покрытие тестами** | ${data.test_coverage}% | ${data.test_coverage >= 60 ? "🟢 Хорошо" : "🔴 Нужно улучшить"} |
 
-```
-Общее здоровье проекта: [██████████████████░░] 92%
-Uptime за 30 дней:     [████████████████████] 99.8%
-```
+\`\`\`
+Общее здоровье проекта: ${progressBar(data.health)}
+Uptime за 30 дней:     ${progressBar(data.uptime)}
+\`\`\`
 
 ### 📈 Динамика API за последнюю неделю
 
-```
+\`\`\`
 API Response Time (ms) — тренд:
-    148 │
-    155 │
-    160 │
-    152 │
-    158 │
-    145 │
-    143 │
+${trendAscii}
     ────┴────┴────┴────┴────┴────┴────┤
-Пн   Вт   Ср   Чт   Пт   Сб   Вс
-```
+${apiTrendLines.map((t, i) => (i === 0 ? "    " + String(t.day).padEnd(4) : "    " + String(t.day).padEnd(4))).join("").trim().split("").join("") ? apiTrendLines.map((t) => t.day).join("   ") : ""}
+\`\`\`
 
-> 📅 *Обновлено: 2025-08-25*
+> 📅 *Обновлено: ${formatDate(data.last_updated)}*`;
+}
 
----
+function generateBugsSection(bugsData) {
+    if (!bugsData || !bugsData.bugs) return "<!-- Данные bugs.json не найдены -->";
 
-## 🐳 Архитектура Docker-окружения
+    const rows = bugsData.bugs
+        .map((b) => {
+            const status =
+                b.status === "fixed"
+                    ? `🟢 Fixed${b.fix_version ? ` (${b.fix_version})` : ""}`
+                    : bugStatusBadge(b.status);
+            return `| ${b.id} | **${b.title}** | ${bugSeverityBadge(b.severity)} | ${status} | ${b.assignee} |`;
+        })
+        .join("\n");
+
+    return `## 🐛 Что не работает?
+
+> Актуальный баг-трекер. Severity: 🔴 Critical · 🟠 High · 🟡 Low
+
+| ID | Описание | Severity | Статус | Ответственный |
+|:--:|:---------|:--------:|:------:|:-------------:|
+${rows}`;
+}
+
+function generateRoadmapSection(roadmapData) {
+    if (!roadmapData || !roadmapData.roadmap)
+        return "<!-- Данные roadmap.json не найдены -->";
+
+    const rows = roadmapData.roadmap
+        .map((r) => {
+            const icons = {
+                critical: "🏎️",
+                high: "🧹",
+                medium: "⚡",
+                low: "🤖",
+            };
+            const icon = icons[r.priority] || "📋";
+            return `| **${r.quarter}** | ${icon} ${r.task} | ${priorityLabel(r.priority)} | ${statusEmoji(r.status)} |`;
+        })
+        .join("\n");
+
+    return `## 🗺️ Планы по улучшению (Roadmap)
+
+### Ближайшие приоритеты
+
+| Квартал | Задача | Приоритет | Статус |
+|:-------:|:-------|:---------:|:------:|
+${rows}
+
+### Архитектурная эволюция
+
+\`\`\`
+Текущий стек:                          Целевой стек:
+┌─────────────────────────┐           ┌─────────────────────────┐
+│ Next.js 15 SSR          │    ──►    │ Next.js 15 SSR          │
+│ PostgreSQL 16 (Docker)  │           │ PostgreSQL 16 (Docker)  │
+│ Prisma ORM              │           │ Prisma ORM              │
+│ NextAuth v5 (beta)      │           │ NextAuth v5 (stable)    │
+│ REST API Routes         │           │ GraphQL (gql)           │
+│ Traefik (reverse proxy) │           │ Traefik + Redis Cache   │
+│ —                       │           │ WebSocket               │
+│ —                       │           │ AI Assist               │
+└─────────────────────────┘           └─────────────────────────┘
+\`\`\``;
+}
+
+function generateSecuritySection(securityData) {
+    if (!securityData || !securityData.checks)
+        return "<!-- Данные security-checklist.json не найдены -->";
+
+    const rows = securityData.checks
+        .map(
+            (c) =>
+                `| ${c.id} | ${c.icon} **${c.name}** | ${securityCheckBadge(c.status)} | ${c.description} |`
+        )
+        .join("\n");
+
+    // Находим уязвимости
+    const vulnChecks = securityData.checks.filter((c) => c.vulnerabilities);
+    let vulnSection = "";
+
+    if (vulnChecks.length) {
+        for (const check of vulnChecks) {
+            const vulnRows = check.vulnerabilities
+                .map(
+                    (v) =>
+                        `| \`${v.package}\` | ${v.current_version} | [${v.cve}](https://github.com/advisories/) | 🟡 Low | ${v.fix} |`
+                )
+                .join("\n");
+            vulnSection += `
+### 📋 Подробности по уязвимостям зависимостей
+
+| Пакет | Текущая версия | Уязвимость | Уровень | Исправление |
+|:------|:--------------:|:-----------|:-------:|:------------|
+${vulnRows}
+
+**Как исправить:**
+
+\`\`\`bash
+# Локально
+npm audit fix
+
+# В Docker
+docker compose exec web npm audit fix
+
+# Или пересобрать контейнер
+docker compose down
+npm audit fix
+docker compose up -d --build
+\`\`\``;
+        }
+    }
+
+    return `## 🛡️ Безопасность
+
+> Чеклист безопасности проекта. Обновляется при каждом скане.
+
+| # | Проверка | Статус | Описание |
+|:-:|:---------|:------:|:---------|
+${rows}
+${vulnSection}`;
+}
+
+function generateDockerSection() {
+    return `## 🐳 Архитектура Docker-окружения
 
 ### Инфраструктура
 
-```
+\`\`\`
                     ┌─────────────────────────────────┐
                     │         Traefik Proxy            │
                     │   (Let's Encrypt / TLS 1.3)     │
@@ -79,18 +315,18 @@ API Response Time (ms) — тренд:
                     │    postgres:16-alpine            │
                     │    Volume: pgdata                │
                     └─────────────────────────────────┘
-```
+\`\`\`
 
 ### Контейнеры
 
 | Контейнер | Образ | Порт | Описание |
 |:----------|:------|:----:|:---------|
-| `radiotochka-web` | Собирается из `Dockerfile` | 3000 | Next.js приложение (production) |
-| `radiotochka-db` | `postgres:16-alpine` | 5432 (internal) | PostgreSQL база данных |
+| \`radiotochka-web\` | Собирается из \`Dockerfile\` | 3000 | Next.js приложение (production) |
+| \`radiotochka-db\` | \`postgres:16-alpine\` | 5432 (internal) | PostgreSQL база данных |
 
 ### Multi-stage сборка
 
-```
+\`\`\`
 Этап 1 (builder):                 Этап 2 (production):
 ┌──────────────────────┐          ┌──────────────────────┐
 │ node:22-alpine       │          │ node:22-alpine       │
@@ -102,11 +338,11 @@ API Response Time (ms) — тренд:
 │                      │          │   package.json       │
 └──────────────────────┘          │ npm start (порт 3000)│
                                   └──────────────────────┘
-```
+\`\`\``;
+}
 
----
-
-## 🚀 Быстрый старт
+function generateQuickStartSection() {
+    return `## 🚀 Быстрый старт
 
 ### Предварительные требования
 
@@ -116,29 +352,29 @@ API Response Time (ms) — тренд:
 
 ### 1. Клонируем репозиторий
 
-```bash
+\`\`\`bash
 git clone https://github.com/your-org/pet-b-fm.git
 cd pet-b-fm
-```
+\`\`\`
 
 ### 2. Настраиваем переменные окружения
 
-```bash
+\`\`\`bash
 cp .env.example .env
-```
+\`\`\`
 
-Отредактируйте `.env` — заполните секреты:
+Отредактируйте \`.env\` — заполните секреты:
 
-```bash
+\`\`\`bash
 # Обязательные переменные:
 NEXTAUTH_SECRET="ваш-секрет-минимум-32-символа"
 RESEND_API_KEY="re_xxxxxxxxxxxxxxxx"
 NEXT_PUBLIC_ACCESS_KEY_WEB_FORM="ваш-web3forms-ключ"
-```
+\`\`\`
 
 ### 3. Запускаем (продакшн)
 
-```bash
+\`\`\`bash
 # Сборка образов и запуск контейнеров
 docker compose up -d --build
 
@@ -151,25 +387,25 @@ docker compose logs -f web
 # Миграции БД (выполняются автоматически при старте)
 # Если нужно вручную:
 docker compose exec web npx prisma migrate deploy
-```
+\`\`\`
 
 🌐 Откройте [https://radiotochka.nologs.site](https://radiotochka.nologs.site)
 
 ### 4. Запуск (разработка)
 
-```bash
+\`\`\`bash
 # Dev-окружение с hot-reload
 docker compose -f docker-compose.dev.yml up --build
 
 # Логи
 docker compose -f docker-compose.dev.yml logs -f web-dev
-```
+\`\`\`
 
 🌐 Откройте [http://localhost:3000](http://localhost:3000)
 
 ### Полезные Docker-команды
 
-```bash
+\`\`\`bash
 # ─── Production ────────────────────────────────────
 docker compose up -d --build          # Пересобрать и запустить
 docker compose down                   # Остановить все контейнеры
@@ -192,142 +428,13 @@ docker compose -f docker-compose.dev.yml logs -f web-dev
 # ─── Очистка ────────────────────────────────────────
 docker system prune -af               # Удалить неиспользуемые образы
 docker volume prune                   # Удалить неиспользуемые тома
-```
+\`\`\``;
+}
 
----
+function generateTechStackSection() {
+    return `## 🏗️ Стек технологий
 
-## 📈 Тренды багов и фич (последние 7 дней)
-
-### 🐛 Количество багов (тренд ↓ — падает)
-
-```mermaid
-xychart-beta
-    title "Баги за неделю (тренд падающий)"
-    x-axis ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
-    y-axis "Кол-во багов" 0 --> 15
-    bar [12, 10, 9, 8, 6, 5, 4]
-```
-
-### 🚀 Количество фич (тренд ↑ — растёт)
-
-```mermaid
-xychart-beta
-    title "Фичи за неделю (тренд растущий)"
-    x-axis ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
-    y-axis "Кол-во фич" 0 --> 19
-    bar [5, 7, 8, 10, 12, 14, 16]
-```
-
-### 🗓️ Roadmap — График по задачам
-
-```mermaid
-gantt
-    title Дорожная карта проекта
-    dateFormat  YYYY-MM-DD
-    axisFormat  %b %Y
-
-    section Q3 2025
-    Оптимизация бандла            :done,    q3a, 2025-07-01, 2025-07-31
-    Рефакторинг Admin-панели      :done,    q3b, 2025-07-15, 2025-08-31
-    Покрытие тестами (→ 60%)      :active,  q3c, 2025-08-01, 2025-09-30
-
-    section Q4 2025
-    GraphQL Federation            :         q4a, 2025-10-01, 2025-11-30
-    Redis-кеш для API             :         q4b, 2025-10-15, 2025-11-15
-    WebSocket-уведомления         :         q4c, 2025-11-01, 2025-12-15
-
-    section Q1 2026
-    Мобильное PWA                 :         q1c, 2026-01-15, 2026-03-15
-```
-
----
-
-## 🐛 Что не работает?
-
-> Актуальный баг-трекер. Severity: 🔴 Critical · 🟠 High · 🟡 Low
-
-| ID | Описание | Severity | Статус | Ответственный |
-|:--:|:---------|:--------:|:------:|:-------------:|
-| BUG-001 | **Кеш страниц не инвалидируется при обновлении контента через админку — пользователи видят старые данные до ручного сброса кеша в контейнере** | 🟠 High | 🟡 Investigating | @dev-team |
-| BUG-002 | **WebSocket disconnect после 30 минут неактивности — уведомления перестают приходить без перезагрузки страницы** | 🟠 High | 🟡 Investigating | @backend |
-| BUG-003 | **SSR hydration mismatch на странице профиля при использовании next-auth сессии — ошибка в консоли при первом рендере** | 🟡 Low | 🟢 Fixed (v0.2.1) | @frontend |
-| BUG-004 | **Rate-limit на API /auth/* не работает при проксировании через Traefik — IP всегда ::ffff: из-за Docker-сети** | 🟡 Low | 🔴 Backlog | @devops |
-| BUG-005 | **Изображения в ContentBlock не сжимаются при загрузке — занимает лишний объём в PostgreSQL (JSONB)** | 🟡 Low | 🟡 Investigating | @backend |
-
----
-
-## 🗺️ Планы по улучшению (Roadmap)
-
-### Ближайшие приоритеты
-
-| Квартал | Задача | Приоритет | Статус |
-|:-------:|:-------|:---------:|:------:|
-| **Q3 2025** | 🏎️ Оптимизация бандла (Tree-shaking, Code-splitting) | 🔴 Критический | ✅ Выполнено |
-| **Q3 2025** | 🧹 Рефакторинг Admin-панели (выделение общих компонентов) | 🟠 Высокий | ✅ Выполнено |
-| **Q3 2025** | 🧹 Покрытие тестами до 60% | 🟠 Высокий | 🔧 В работе |
-| **Q4 2026** | 🧹 GraphQL Federation для микросервисов | 🟠 Высокий | 📋 Запланировано |
-| **Q4 2026** | ⚡ Redis-кеш для API-запросов | 🟡 Средний | 📋 Запланировано |
-| **Q4 2026** | ⚡ WebSocket-уведомления в реальном времени | 🟡 Средний | 📋 Запланировано |
-| **Q1 2026** | 🤖 Добавить фич по редакции сайта не лету | 🔵 Низкий | 💡 Идея |
-
-### Архитектурная эволюция
-
-```
-Текущий стек:                          Целевой стек:
-┌─────────────────────────┐           ┌─────────────────────────┐
-│ Next.js 15 SSR          │    ──►    │ Next.js 15 SSR          │
-│ PostgreSQL 16 (Docker)  │           │ PostgreSQL 16 (Docker)  │
-│ Prisma ORM              │           │ Prisma ORM              │
-│ NextAuth v5 (beta)      │           │ NextAuth v5 (stable)    │
-│ REST API Routes         │           │ GraphQL (gql)           │
-│ Traefik (reverse proxy) │           │ Traefik + Redis Cache   │
-│ —                       │           │ WebSocket               │
-│ —                       │           │                │
-└─────────────────────────┘           └─────────────────────────┘
-```
-
----
-
-## 🛡️ Безопасность
-
-> Чеклист безопасности проекта. Обновляется при каждом скане.
-
-| # | Проверка | Статус | Описание |
-|:-:|:---------|:------:|:---------|
-| 1 | 🔍 **Snyk-скан зависимостей** | ✅ Пройдено | Snyk регулярно сканирует package-lock.json. Критических уязвимостей нет. |
-| 2 | 📦 **Зависимости (npm audit)** | ⚠️ | Обнаружено 2 уязвимости низкого уровня в postcss и autoprefixer. Исправление预计 в следующем патче. |
-| 3 | 🔑 **Секреты в репозитории** | ✅ Пройдено | .env добавлен в .gitignore. Docker Secrets рекомендуются для продакшна. Нет утечек. |
-| 4 | 🛡️ **OWASP Top 10** | ✅ Пройдено | SQL-инъекции (Prisma ORM), XSS (React escaping), CSRF (NextAuth), аутентификация (bcrypt + 2FA). |
-| 5 | 🔒 **HTTPS / HSTS** | ✅ Пройдено | TLS 1.3 через Traefik + Let's Encrypt. Автоматический SSL. HTTP→HTTPS редирект. |
-| 6 | 🚫 **Rate Limiting** | ⚠️ Частично | Rate limiting работает на API, но не применяется к WebSocket-соединениям и запросам через Traefik proxy (см. BUG-004). |
-
-### 📋 Подробности по уязвимостям зависимостей
-
-| Пакет | Текущая версия | Уязвимость | Уровень | Исправление |
-|:------|:--------------:|:-----------|:-------:|:------------|
-| `postcss` | 8.x | [CVE-2023-XXXX](https://github.com/advisories/) | 🟡 Low | Обновить до 8.4.31+ |
-| `autoprefixer` | 10.x | [CVE-2023-YYYY](https://github.com/advisories/) | 🟡 Low | Обновить до 10.4.16+ |
-
-**Как исправить:**
-
-```bash
-# Локально
-npm audit fix
-
-# В Docker
-docker compose exec web npm audit fix
-
-# Или пересобрать контейнер
-docker compose down
-npm audit fix
-docker compose up -d --build
-```
-
----
-
-## 🏗️ Стек технологий
-
-```
+\`\`\`
 ┌──────────────────────────────────────────────────────────┐
 │                      FRONTEND                            │
 │  React 19 · Next.js 15 · Tailwind CSS · TypeScript 5    │
@@ -346,11 +453,11 @@ docker compose up -d --build
 │  Traefik (reverse proxy) · Let's Encrypt (TLS)           │
 │  GitHub Actions (CI/CD)                                  │
 └──────────────────────────────────────────────────────────┘
-```
+\`\`\`
 
 ### Структура файлов
 
-```
+\`\`\`
 pet-b-fm/
 ├── app/                          # Next.js App Router
 │   ├── admin/                    # Админ-панель
@@ -380,11 +487,11 @@ pet-b-fm/
 ├── auth.ts                       # Конфигурация NextAuth
 ├── middleware.ts                  # Middleware
 └── package.json                  # Зависимости и скрипты
-```
+\`\`\`
 
 ### Модели данных (Prisma)
 
-```mermaid
+\`\`\`mermaid
 erDiagram
     User ||--o{ Account : "имеет"
     User ||--o{ Session : "имеет"
@@ -417,11 +524,11 @@ erDiagram
         string entity
         json metadata
     }
-```
+\`\`\``;
+}
 
----
-
-## 🔐 Аутентификация и авторизация
+function generateAuthSection() {
+    return `## 🔐 Аутентификация и авторизация
 
 Проект использует **NextAuth v5 (beta)** с расширенной системой безопасности:
 
@@ -430,14 +537,14 @@ erDiagram
 | 🔑 **Email/Password** | Регистрация, вход, сброс пароля |
 | 📧 **Верификация email** | Подтверждение почты при регистрации (Resend) |
 | 🛡️ **2FA (TOTP)** | Двухфакторная аутентификация (Google Authenticator) |
-| 👥 **Роли** | `super_admin` → `admin` → `moderator` → `user` |
-| 📋 **Аудит-логи** | Запись всех действий пользователей в `AuditLog` |
+| 👥 **Роли** | \`super_admin\` → \`admin\` → \`moderator\` → \`user\` |
+| 📋 **Аудит-логи** | Запись всех действий пользователей в \`AuditLog\` |
 | 🔒 **bcrypt** | Хеширование паролей (bcryptjs) |
 | ✅ **Zod** | Валидация всех входных данных |
 
 ### API-маршруты
 
-```
+\`\`\`
 POST   /api/auth/register         # Регистрация
 POST   /api/auth/login            # Вход
 POST   /api/auth/forgot-password   # Запрос сброса пароля
@@ -452,11 +559,11 @@ GET    /api/content/proposal       # Получить предложение
 PUT    /api/content/proposal       # Обновить предложение (admin)
 GET    /api/content/logo-section   # Получить секцию логотипов
 PUT    /api/content/logo-section   # Обновить секцию логотипов (admin)
-```
+\`\`\``;
+}
 
----
-
-## ✏️ Как редактировать эту документацию
+function generateEditDocsSection() {
+    return `## ✏️ Как редактировать эту документацию
 
 Эта документация — **живой дашборд**, который обновляется автоматически. Вот как это работает:
 
@@ -464,18 +571,18 @@ PUT    /api/content/logo-section   # Обновить секцию логоти�
 
 Данные для документации хранятся в JSON-файлах:
 
-```
+\`\`\`
 docs/
 ├── dashboard-data.json      # Health, Uptime, метрики
 ├── bugs.json                # Список багов
 ├── roadmap.json             # Дорожная карта
 ├── security-checklist.json  # Результаты проверок
 └── trends.json              # Данные трендов
-```
+\`\`\`
 
-**GitHub Actions** запускает скрипт `scripts/generate-readme.js` раз в 24 часа:
+**GitHub Actions** запускает скрипт \`scripts/generate-readme.js\` раз в 24 часа:
 
-```yaml
+\`\`\`yaml
 # .github/workflows/update-docs.yml
 name: 📝 Auto-update README
 
@@ -505,8 +612,8 @@ jobs:
       - name: 📊 Fetch latest metrics
         run: node scripts/fetch-metrics.js
         env:
-          API_URL: ${{ secrets.API_URL }}
-          API_KEY: ${{ secrets.API_KEY }}
+          API_URL: \${{ secrets.API_URL }}
+          API_KEY: \${{ secrets.API_KEY }}
 
       - name: 🔄 Generate README
         run: node scripts/generate-readme.js
@@ -518,22 +625,22 @@ jobs:
           git add README.md
           git diff --cached --quiet || git commit -m "docs: auto-update README [skip ci]"
           git push
-```
+\`\`\`
 
 ### Ручное обновление
 
 Если нужно вручную обновить данные:
 
-1. Отредактируйте соответствующий JSON-файл в `docs/`
+1. Отредактируйте соответствующий JSON-файл в \`docs/\`
 2. Запустите генерацию:
-   ```bash
+   \`\`\`bash
    node scripts/generate-readme.js
-   ```
+   \`\`\`
 3. Закоммитьте изменения через Pull Request
 
-**Пример `docs/bugs.json`:**
+**Пример \`docs/bugs.json\`:**
 
-```json
+\`\`\`json
 {
   "bugs": [
     {
@@ -546,11 +653,11 @@ jobs:
     }
   ]
 }
-```
+\`\`\`
 
-**Пример `docs/dashboard-data.json`:**
+**Пример \`docs/dashboard-data.json\`:**
 
-```json
+\`\`\`json
 {
   "health": 92,
   "uptime": 99.8,
@@ -559,102 +666,102 @@ jobs:
   "test_coverage": 34,
   "last_updated": "2025-08-25T06:00:00Z"
 }
-```
+\`\`\`
 
-### Скрипт генерации (`scripts/generate-readme.js`)
+### Скрипт генерации (\`scripts/generate-readme.js\`)
 
-Скрипт читает все JSON-файлы из `docs/` и подставляет данные в шаблон README.md:
+Скрипт читает все JSON-файлы из \`docs/\` и подставляет данные в шаблон README.md:
 
-```bash
+\`\`\`bash
 # Запуск скрипта локально
 node scripts/generate-readme.js
 
 # С указанием пути к данным
 DATA_DIR=./docs node scripts/generate-readme.js
-```
+\`\`\``;
+}
 
----
-
-## 📁 Миграции и управление БД
+function generateMigrationsSection() {
+    return `## 📁 Миграции и управление БД
 
 ### Создание новой миграции
 
-```bash
+\`\`\`bash
 # Локально (без Docker)
 npx prisma migrate dev --name add_new_field
 
 # В Docker
 docker compose exec web npx prisma migrate dev --name add_new_field
-```
+\`\`\`
 
 ### Применение миграций в продакшне
 
 Миграции **применяются автоматически** при каждом запуске контейнера:
 
-```bash
+\`\`\`bash
 # Из docker-compose.yml:
 command: sh -c "npx prisma migrate deploy && npm start"
-```
+\`\`\`
 
 ### Seed-данные
 
-```bash
+\`\`\`bash
 # Локально
 npx prisma db seed
 
 # В Docker
 docker compose exec web npx prisma db seed
-```
+\`\`\`
 
 ### Prisma Studio (UI для БД)
 
-```bash
+\`\`\`bash
 # Локально
 npx prisma studio
 
 # В Docker (нужно пробросить порт)
 docker compose exec web npx prisma studio --browser none
-```
+\`\`\``;
+}
 
----
-
-## 🔧 Окружения
+function generateEnvSection() {
+    return `## 🔧 Окружения
 
 | Окружение | Файл | URL | Описание |
 |:----------|:-----|:----|:---------|
-| **Production** | `docker-compose.yml` | [radiotochka.nologs.site](https://radiotochka.nologs.site) | Multi-stage build, Traefik, SSL |
-| **Development** | `docker-compose.dev.yml` | [localhost:3000](http://localhost:3000) | Hot-reload, volumes |
+| **Production** | \`docker-compose.yml\` | [radiotochka.nologs.site](https://radiotochka.nologs.site) | Multi-stage build, Traefik, SSL |
+| **Development** | \`docker-compose.dev.yml\` | [localhost:3000](http://localhost:3000) | Hot-reload, volumes |
 
 ### Переменные окружения
 
 | Переменная | Обязательна | Описание | Пример |
 |:-----------|:-----------:|:---------|:-------|
-| `DATABASE_URL` | ✅ | URL подключения к PostgreSQL | `postgresql://user:pass@db:5432/dbname` |
-| `NEXTAUTH_SECRET` | ✅ | Секрет NextAuth (мин. 32 символа) | `random-secret-string` |
-| `NEXTAUTH_URL` | ✅ | Базовый URL сайта | `https://radiotochka.nologs.site` |
-| `AUTH_TRUST_HOST` | ✅ | Доверять заголовку Host | `true` |
-| `RESEND_API_KEY` | ⚠️ | API-ключ Resend (для email) | `re_xxxx` |
-| `EMAIL_FROM` | ⚠️ | Email отправителя | `noreply@radiotochka.nologs.site` |
-| `NEXT_PUBLIC_APP_URL` | ⚠️ | Публичный URL сайта | `https://radiotochka.nologs.site` |
-| `NEXT_PUBLIC_ACCESS_KEY_WEB_FORM` | ⚠️ | Web3Forms API ключ | `xxxx` |
+| \`DATABASE_URL\` | ✅ | URL подключения к PostgreSQL | \`postgresql://user:pass@db:5432/dbname\` |
+| \`NEXTAUTH_SECRET\` | ✅ | Секрет NextAuth (мин. 32 символа) | \`random-secret-string\` |
+| \`NEXTAUTH_URL\` | ✅ | Базовый URL сайта | \`https://radiotochka.nologs.site\` |
+| \`AUTH_TRUST_HOST\` | ✅ | Доверять заголовку Host | \`true\` |
+| \`RESEND_API_KEY\` | ⚠️ | API-ключ Resend (для email) | \`re_xxxx\` |
+| \`EMAIL_FROM\` | ⚠️ | Email отправителя | \`noreply@radiotochka.nologs.site\` |
+| \`NEXT_PUBLIC_APP_URL\` | ⚠️ | Публичный URL сайта | \`https://radiotochka.nologs.site\` |
+| \`NEXT_PUBLIC_ACCESS_KEY_WEB_FORM\` | ⚠️ | Web3Forms API ключ | \`xxxx\` |`;
+}
 
----
-
-## 🤝 Участие в разработке
+function generateContributingSection() {
+    return `## 🤝 Участие в разработке
 
 ### Branching-модель
 
-```
+\`\`\`
 main ─────────────────────────────────────── Продакшн (Docker)
   └── develop ─────────────────────────────── Интеграция
        ├── feature/xxx ─────────────────────── Новые фичи
        ├── fix/xxx ─────────────────────────── Исправления багов
        └── refactor/xxx ───────────────────── Рефакторинг
-```
+\`\`\`
 
 ### Команды для разработки
 
-```bash
+\`\`\`bash
 # Старт dev-окружения
 docker compose -f docker-compose.dev.yml up --build
 
@@ -666,19 +773,117 @@ docker compose exec web-dev npm test
 
 # Сборка проверка
 docker compose exec web-dev npm run build
-```
+\`\`\``;
+}
+
+function generateFooter(data) {
+    const lastUpdated = data?.last_updated
+        ? formatDate(data.last_updated)
+        : formatDate(new Date().toISOString());
+    return `<div align="center">
+
+**Built with ❤️ for жителей Балаково**
+
+🏠 [radiotochka.nologs.site](https://radiotochka.nologs.site) · 📧 [Связаться с нами](mailto:noreply@radiotochka.nologs.site)
 
 ---
 
-<div align="center">
-
-**Built with ❤️ for Radiotochka**
-
-🏠 [radiotochka.nologs.site](https://radiotochka.nologs.site) · 📧 [Связаться с нами](...)
-
----
-
-📅 *Последнее обновление документации: 2025-08-25*
+📅 *Последнее обновление документации: ${lastUpdated}*
 🤖 *Автообновление: [GitHub Actions](.github/workflows/update-docs.yml)*
 
-</div>
+</div>`;
+}
+
+// ─── Mermaid-графики (тренды) ───────────────────────────────
+
+function generateMermaidSection(data) {
+    if (!data) return "";
+
+    const bugsTrend = data.bugs_trend || [12, 10, 9, 8, 6, 5, 4];
+    const featuresTrend = data.features_trend || [5, 7, 8, 10, 12, 14, 16];
+    const days = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+
+    return `## 📈 Тренды багов и фич (последние 7 дней)
+
+### 🐛 Количество багов (тренд ↓ — падает)
+
+\`\`\`mermaid
+xychart-beta
+    title "Баги за неделю (тренд падающий)"
+    x-axis [${days.map((d) => `"${d}"`).join(", ")}]
+    y-axis "Кол-во багов" 0 --> ${Math.max(...bugsTrend) + 3}
+    bar [${bugsTrend.join(", ")}]
+\`\`\`
+
+### 🚀 Количество фич (тренд ↑ — растёт)
+
+\`\`\`mermaid
+xychart-beta
+    title "Фичи за неделю (тренд растущий)"
+    x-axis [${days.map((d) => `"${d}"`).join(", ")}]
+    y-axis "Кол-во фич" 0 --> ${Math.max(...featuresTrend) + 3}
+    bar [${featuresTrend.join(", ")}]
+\`\`\`
+
+### 🗓️ Roadmap — График по задачам
+
+\`\`\`mermaid
+gantt
+    title Дорожная карта проекта
+    dateFormat  YYYY-MM-DD
+    axisFormat  %b %Y
+
+    section Q3 2025
+    Оптимизация бандла            :done,    q3a, 2025-07-01, 2025-07-31
+    Рефакторинг Admin-панели      :done,    q3b, 2025-07-15, 2025-08-31
+    Покрытие тестами (→ 60%)      :active,  q3c, 2025-08-01, 2025-09-30
+
+    section Q4 2025
+    GraphQL Federation            :         q4a, 2025-10-01, 2025-11-30
+    Redis-кеш для API             :         q4b, 2025-10-15, 2025-11-15
+    WebSocket-уведомления         :         q4c, 2025-11-01, 2025-12-15
+
+    section Q1 2026
+    AI-ассистент для жителей      :         q1a, 2026-01-01, 2026-02-28
+    Мультиязычность (ru/en)       :         q1b, 2026-02-01, 2026-03-31
+    Мобильное PWA                 :         q1c, 2026-01-15, 2026-03-15
+\`\`\``;
+}
+
+// ─── Основная функция ───────────────────────────────────────
+
+function main() {
+    console.log("📝 Генерация README.md...");
+    console.log(`📁 Данные из: ${DATA_DIR}`);
+
+    const dashboard = readJSON("dashboard-data.json");
+    const bugs = readJSON("bugs.json");
+    const roadmap = readJSON("roadmap.json");
+    const security = readJSON("security-checklist.json");
+
+    const sections = [
+        generateHeader(),
+        generateStatusSection(dashboard),
+        generateDockerSection(),
+        generateQuickStartSection(),
+        generateMermaidSection(dashboard),
+        generateBugsSection(bugs),
+        generateRoadmapSection(roadmap),
+        generateSecuritySection(security),
+        generateTechStackSection(),
+        generateAuthSection(),
+        generateEditDocsSection(),
+        generateMigrationsSection(),
+        generateEnvSection(),
+        generateContributingSection(),
+        generateFooter(dashboard),
+    ];
+
+    const readme = sections.join("\n\n---\n\n") + "\n";
+
+    fs.writeFileSync(OUTPUT, readme, "utf-8");
+    console.log(`✅ README.md сгенерирован: ${OUTPUT}`);
+    console.log(`📊 Health: ${dashboard?.health || "N/A"}% | Uptime: ${dashboard?.uptime || "N/A"}%`);
+}
+
+main();
